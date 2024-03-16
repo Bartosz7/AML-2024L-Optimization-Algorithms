@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from sklearn.model_selection import train_test_split
+from pandas.api.types import is_object_dtype
 
 def one_hot_encode(df):
     """One hot encoding for object type columns in given data frame."""

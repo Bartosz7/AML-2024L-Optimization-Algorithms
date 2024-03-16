@@ -1,11 +1,8 @@
-import numpy as np
 import pandas as pd
 from scipy.io import arff
-from pandas.api.types import is_object_dtype
 from sklearn import preprocessing 
 from utils.preprocess_helpers import(
     one_hot_encode,
-    calculate_vif,
     impute_water,
     vif_train_test_split
 )

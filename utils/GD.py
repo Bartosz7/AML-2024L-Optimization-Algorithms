@@ -1,9 +1,6 @@
 import numpy as np
 from tqdm import tqdm
-from utils.train_helpers import (
-    log_likelihood,
-    calc_pi
-)
+from utils.train_helpers import log_likelihood
 
 def make_batches(X, y, batch_size):
     """Function creates batches for gradient descent algorithm."""
