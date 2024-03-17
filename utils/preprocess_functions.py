@@ -3,7 +3,7 @@ from scipy.io import arff
 from sklearn import preprocessing
 
 from utils.preprocess_helpers import (impute_water, one_hot_encode,
-                                      vif_train_test_split)
+                                      split_with_preprocess)
 
 RANDOM_STATE = 123
 
@@ -17,7 +17,7 @@ def preprocess_booking(filename="data/booking.csv"):
     booking["room type"] = label_encoder.fit_transform(booking["room type"])
     booking = one_hot_encode(booking)
 
-    return vif_train_test_split(
+    return split_with_preprocess(
         df=booking, target_col_name="booking status", dataset_name="booking"
     )
 
@@ -35,7 +35,7 @@ def preprocess_churn(filename="data/churn.csv"):
     churn.loc[churn["AnnualIncomeClass"] == "High Income", "AnnualIncomeClass"] = 2
     churn.AnnualIncomeClass = churn.AnnualIncomeClass.astype(int)
 
-    return vif_train_test_split(
+    return split_with_preprocess(
         df=churn, target_col_name="Target", dataset_name="churn"
     )
 
@@ -49,7 +49,7 @@ def preprocess_employee(filename="data/employee.csv"):
     df["EverBenched"] = df["EverBenched"].map({"No": 0, "Yes": 1})
     df.drop(["Education", "City"], axis=1, inplace=True)
 
-    return vif_train_test_split(
+    return split_with_preprocess(
         df=df, target_col_name="LeaveOrNot", dataset_name="employee"
     )
 
@@ -70,7 +70,7 @@ def preprocess_challenger(filename="data/challenger_lol.csv"):
         df.drop(f"{col}FirstTowerLane", axis=1, inplace=True)
         df.drop(f"{col}DragnoType", axis=1, inplace=True)
 
-    return vif_train_test_split(
+    return split_with_preprocess(
         df=df, target_col_name="blueWins", dataset_name="challenger lol"
     )
 
@@ -99,14 +99,14 @@ def preprocess_jungle(filename="data/jungle_chess.arff"):
     df.drop(["white_piece0_advanced", "black_piece0_advanced"], axis=1, inplace=True)
     df = df.apply(pd.to_numeric)
 
-    return vif_train_test_split(df=df, target_col_name="class", dataset_name="jungle")
+    return split_with_preprocess(df=df, target_col_name="class", dataset_name="jungle")
 
 
 def preprocess_water(filename="data/water_quality.csv"):
     """Preprocessing for water_quality.csv dataset."""
     water = pd.read_csv(filename)
 
-    return vif_train_test_split(
+    return split_with_preprocess(
         df=water,
         target_col_name="is_safe",
         dataset_name="water",

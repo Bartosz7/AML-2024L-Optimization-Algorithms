@@ -17,10 +17,6 @@ def one_hot_encode(df):
     return df
 
 
-# Function for calculating VIF source:
-# https://stats.stackexchange.com/questions/155028/how-to-systematically-remove-collinear-variables-pandas-columns-in-python
-
-
 def calculate_vif(X, thresh=5.0):
     """
     Removal of multicolinear columns in given data frame using VIF. Based on:
@@ -74,27 +70,38 @@ def impute_water(water_train, water_test):
     return water_train, water_test
 
 
-def vif_train_test_split(df, target_col_name, dataset_name, additional_preprocess=None):
+def split_with_preprocess(
+    df, target_col_name, dataset_name, additional_preprocess=None, interactions=False
+):
     """Train test split for given data frame including removal of multicolinear columns."""
     print(f"Removing multicolinear columns in {dataset_name} dataset...")
     train, test = train_test_split(df, test_size=0.2)  # random_state=RANDOM_STATE
 
     y_train = train[target_col_name].to_numpy()
     y_test = test[target_col_name].to_numpy()
-    _df_train = train.drop(target_col_name, axis=1)
-    _df_test = test.drop(target_col_name, axis=1)
+    _X_train = train.drop(target_col_name, axis=1)
+    _X_test = test.drop(target_col_name, axis=1)
 
     if additional_preprocess:
-        _df_train, _df_test = additional_preprocess(_df_train, _df_test)
+        _X_train, _X_test = additional_preprocess(_X_train, _X_test)
 
-    indices_to_drop = calculate_vif(_df_train)
-    df_train = _df_train.iloc[:, indices_to_drop]
-    df_test = _df_test.iloc[:, indices_to_drop]
+    indices_to_drop = calculate_vif(_X_train)
+    X_train = _X_train.iloc[:, indices_to_drop]
+    X_test = _X_test.iloc[:, indices_to_drop]
 
-    df_train = df_train.to_numpy()
-    df_test = df_test.to_numpy()
+    X_train = X_train.to_numpy()
+    X_test = X_test.to_numpy()
 
-    df_train = np.concatenate((np.ones((df_train.shape[0], 1)), df_train), 1)
-    df_test = np.concatenate((np.ones((df_test.shape[0], 1)), df_test), 1)
+    if interactions:
+        X_train = make_interactions(X_train)
+        X_test = make_interactions(X_test)
 
-    return df_train, np.expand_dims(y_train, 1), df_test, np.expand_dims(y_test, 1)
+    X_train = np.concatenate((np.ones((X_train.shape[0], 1)), X_train), 1)
+    X_test = np.concatenate((np.ones((X_test.shape[0], 1)), X_test), 1)
+
+    return X_train, np.expand_dims(y_train, 1), X_test, np.expand_dims(y_test, 1)
+
+
+def make_interactions(X):
+    # TODO
+    return X
