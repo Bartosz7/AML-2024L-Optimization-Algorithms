@@ -3,9 +3,9 @@ import numpy as np
 
 
 def plot_figures_for_cv(l_iwls_vals_list, l_sgd_vals_list, l_adam_vals_list):
-    """Function plots Minus log likelihood vs Iteration number for each model and fold from CV"""
-    n_folds = len(l_iwls_vals_list)
-    for i in range(n_folds):
+    """Function plots Minus log likelihood vs Iteration number for each model and split from CV"""
+    n_splits = len(l_iwls_vals_list)
+    for i in range(n_splits):
 
         l_iwls_vals = l_iwls_vals_list[i]
         l_sgd_vals = l_sgd_vals_list[i]
@@ -31,5 +31,5 @@ def plot_figures_for_cv(l_iwls_vals_list, l_sgd_vals_list, l_adam_vals_list):
         plt.rc("legend", fontsize=15)
         plt.xlabel("Iterations", fontsize=20)
         plt.ylabel("Minus log-likelihood", fontsize=20)
-        plt.title(f"Comparison between models for fold {i+1}", fontsize=20)
+        plt.title(f"Comparison between models for split {i+1}", fontsize=20)
         plt.show()

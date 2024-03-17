@@ -67,7 +67,7 @@ def cv(preprocess_fun: Callable, n_splits: int = 5, **kwargs):
     l_sgd_vals_list = []
     l_adam_vals_list = []
     for i in range(n_splits):
-        print(f"CV fold {i+1}")
+        print(f"CV split {i+1}")
 
         X_train, y_train, X_test, y_test = preprocess_fun(**kwargs)
         time.sleep(1)  # to remove visual bug with tqdm
