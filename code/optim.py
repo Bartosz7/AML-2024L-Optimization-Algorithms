@@ -1,5 +1,5 @@
-from tqdm import tqdm
 import numpy as np
+from tqdm import tqdm
 
 
 def sgd(X, Y, step_size, max_it=10000, batch_size=1, print_every=50):

@@ -2,13 +2,12 @@ import pandas as pd
 from scipy.io import arff
 from sklearn import preprocessing
 
-from utils.preprocess_helpers import (impute_water, one_hot_encode,
-                                      split_with_preprocess)
+from utils.preprocess_helpers import impute_water, one_hot_encode, split_with_preprocess
 
 RANDOM_STATE = 123
 
 
-def preprocess_booking(filename="data/booking.csv"):
+def preprocess_booking(filename: str = "data/booking.csv", interactions: bool = False):
     """Preprocessing for booking.csv dataset."""
     booking = pd.read_csv(filename).drop(["Booking_ID", "date of reservation"], axis=1)
     booking["market segment type"] = 1 * (booking["market segment type"] == "Online")
@@ -18,11 +17,14 @@ def preprocess_booking(filename="data/booking.csv"):
     booking = one_hot_encode(booking)
 
     return split_with_preprocess(
-        df=booking, target_col_name="booking status", dataset_name="booking"
+        df=booking,
+        target_col_name="booking status",
+        dataset_name="booking",
+        interactions=interactions,
     )
 
 
-def preprocess_churn(filename="data/churn.csv"):
+def preprocess_churn(filename: str = "data/churn.csv", interactions: bool = False):
     """Preprocessing for churn.csv dataset."""
     churn = pd.read_csv(filename)
     churn["FrequentFlyer"] = 1 * (churn["FrequentFlyer"] == "Yes")
@@ -36,11 +38,16 @@ def preprocess_churn(filename="data/churn.csv"):
     churn.AnnualIncomeClass = churn.AnnualIncomeClass.astype(int)
 
     return split_with_preprocess(
-        df=churn, target_col_name="Target", dataset_name="churn"
+        df=churn,
+        target_col_name="Target",
+        dataset_name="churn",
+        interactions=interactions,
     )
 
 
-def preprocess_employee(filename="data/employee.csv"):
+def preprocess_employee(
+    filename: str = "data/employee.csv", interactions: bool = False
+):
     """Preprocessing for employee.csv dataset."""
     df = pd.read_csv(filename)
     df["EducationBachelors"] = 1 * (df["Education"] == "Bachelors")
@@ -50,11 +57,16 @@ def preprocess_employee(filename="data/employee.csv"):
     df.drop(["Education", "City"], axis=1, inplace=True)
 
     return split_with_preprocess(
-        df=df, target_col_name="LeaveOrNot", dataset_name="employee"
+        df=df,
+        target_col_name="LeaveOrNot",
+        dataset_name="employee",
+        interactions=interactions,
     )
 
 
-def preprocess_challenger(filename="data/challenger_lol.csv"):
+def preprocess_challenger(
+    filename: str = "data/challenger_lol.csv", interactions: bool = False
+):
     """Preprocessing for challenger_lol.csv dataset."""
     df = pd.read_csv(filename)
     df.drop("gameId", axis=1, inplace=True)
@@ -71,11 +83,16 @@ def preprocess_challenger(filename="data/challenger_lol.csv"):
         df.drop(f"{col}DragnoType", axis=1, inplace=True)
 
     return split_with_preprocess(
-        df=df, target_col_name="blueWins", dataset_name="challenger lol"
+        df=df,
+        target_col_name="blueWins",
+        dataset_name="challenger lol",
+        interactions=interactions,
     )
 
 
-def preprocess_jungle(filename="data/jungle_chess.arff"):
+def preprocess_jungle(
+    filename: str = "data/jungle_chess.arff", interactions: bool = False
+):
     """Preprocessing for jungle_chess.arff dataset."""
     df = arff.loadarff(filename)
     df = pd.DataFrame(df[0])
@@ -99,10 +116,14 @@ def preprocess_jungle(filename="data/jungle_chess.arff"):
     df.drop(["white_piece0_advanced", "black_piece0_advanced"], axis=1, inplace=True)
     df = df.apply(pd.to_numeric)
 
-    return split_with_preprocess(df=df, target_col_name="class", dataset_name="jungle")
+    return split_with_preprocess(
+        df=df, target_col_name="class", dataset_name="jungle", interactions=interactions
+    )
 
 
-def preprocess_water(filename="data/water_quality.csv"):
+def preprocess_water(
+    filename: str = "data/water_quality.csv", interactions: bool = False
+):
     """Preprocessing for water_quality.csv dataset."""
     water = pd.read_csv(filename)
 
@@ -111,4 +132,5 @@ def preprocess_water(filename="data/water_quality.csv"):
         target_col_name="is_safe",
         dataset_name="water",
         additional_preprocess=impute_water,
+        interactions=interactions,
     )

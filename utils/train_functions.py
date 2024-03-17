@@ -1,5 +1,6 @@
 import time
 import warnings
+from typing import Callable
 
 import numpy as np
 from sklearn.linear_model import LogisticRegression
@@ -12,7 +13,9 @@ from utils.train_helpers import calc_pi
 warnings.filterwarnings("ignore")
 
 
-def train_and_eval(X_train, y_train, X_test, y_test):
+def train_and_eval(
+    X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, y_test: np.ndarray
+):
     """Train models for a given train and test sets"""
     # IWLS
     l_iwls_vals, best_beta_iwls = IWLS(X_train, y_train, n_iter=100)
@@ -43,18 +46,30 @@ def train_and_eval(X_train, y_train, X_test, y_test):
     return l_iwls_vals, l_sgd_vals, l_adam_vals, iwls_acc, sgd_acc, adam_acc
 
 
-def cv(preprocess_fun, n_folds=5):
-    """Cross-validation for every model used to evaluate balanced accuracy."""
+def cv(preprocess_fun: Callable, n_splits: int = 5, **kwargs):
+    """Cross-validation for every model used to evaluate balanced accuracy.
+
+    Arguments:
+    preprocess_fun : function to perform preprocessing
+    n_splits : number of different splits of data
+
+    Keyword Arguments:
+    filename : path to file with data
+    interactions : if True the interactions between variables are added during preprocessing
+
+    Returns:
+
+    """
     sgd_acc_list = []
     adam_acc_list = []
     iwls_acc_list = []
     l_iwls_vals_list = []
     l_sgd_vals_list = []
     l_adam_vals_list = []
-    for i in range(n_folds):
+    for i in range(n_splits):
         print(f"CV fold {i+1}")
 
-        X_train, y_train, X_test, y_test = preprocess_fun()
+        X_train, y_train, X_test, y_test = preprocess_fun(**kwargs)
         time.sleep(1)  # to remove visual bug with tqdm
         l_iwls_vals, l_sgd_vals, l_adam_vals, iwls_acc, sgd_acc, adam_acc = (
             train_and_eval(X_train, y_train, X_test, y_test)
