@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
+import pandas as pd
 
 
 def plot_figures_for_cv(l_iwls_vals_list, l_sgd_vals_list, l_adam_vals_list):
@@ -33,3 +35,20 @@ def plot_figures_for_cv(l_iwls_vals_list, l_sgd_vals_list, l_adam_vals_list):
         plt.ylabel("Minus log-likelihood", fontsize=20)
         plt.title(f"Comparison between models for split {i+1}", fontsize=20)
         plt.show()
+
+
+def plot_acc_boxplots(sgd_acc_list, adam_acc_list, iwls_acc_list):
+    df = pd.DataFrame(
+        {
+            "acc": sgd_acc_list + adam_acc_list + iwls_acc_list,
+            "model": ["sgd" for i in range(len(sgd_acc_list))]
+            + ["adam" for i in range(len(adam_acc_list))]
+            + ["iwls" for i in range(len(iwls_acc_list))],
+        }
+    )
+
+    sns.boxplot(data=df, x="model", y="acc").set(
+        title=f"Models accuracy for {len(sgd_acc_list)} train test splits",
+        xlabel="Models",
+        ylabel="Accuracy",
+    )

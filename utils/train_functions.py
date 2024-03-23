@@ -38,8 +38,8 @@ def train_and_eval(
     lr_preds = lr.predict(X_test)
     lr_acc = balanced_accuracy_score(y_test, np.expand_dims(lr_preds, 1))
 
-    print(f"Balanced accuracy of GD without optimizer is: {sgd_acc}")
-    print(f"Balanced accuracy of SGD with ADAM is: {adam_acc}")
+    print(f"Balanced accuracy of SGD without optimizer is: {sgd_acc}")
+    print(f"Balanced accuracy of GD with ADAM is: {adam_acc}")
     print(f"Balanced accuracy of IWLS is: {iwls_acc}")
     print(f"Balanced accuracy of LR from Scikit is {lr_acc}")
 
@@ -83,9 +83,9 @@ def cv(preprocess_fun: Callable, n_splits: int = 5, **kwargs):
         l_adam_vals_list.append(l_adam_vals)
 
     return (
-        np.mean(sgd_acc_list),
-        np.mean(adam_acc_list),
-        np.mean(iwls_acc_list),
+        sgd_acc_list,
+        adam_acc_list,
+        iwls_acc_list,
         l_iwls_vals_list,
         l_sgd_vals_list,
         l_adam_vals_list,
