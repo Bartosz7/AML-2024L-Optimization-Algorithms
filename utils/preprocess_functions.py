@@ -68,7 +68,7 @@ def preprocess_challenger(
 ):
     """Preprocessing for challenger_lol.csv dataset."""
     df = pd.read_csv(filename)
-    df.drop("gameId", axis=1, inplace=True)
+    df.drop(["blueFirstBlood", "redFirstBlood", "gameId"], axis=1, inplace=True)
     for col in ["blue", "red"]:
         for lane in ["BOT_LANE", "MID_LANE", "TOP_LANE"]:
             df[f"{col}FirstTowerLane_{lane}"] = df[f"{col}FirstTowerLane"].apply(
@@ -76,7 +76,7 @@ def preprocess_challenger(
             )
         for dragon in ["AIR_DRAGON", "WATER_DRAGON", "FIRE_DRAGON", "EARTH_DRAGON"]:
             df[f"{col}DragnoType_{dragon}"] = df[f"{col}DragnoType"].apply(
-                lambda x: int(lane in x)
+                lambda x: int(dragon in x)
             )
         df.drop(f"{col}FirstTowerLane", axis=1, inplace=True)
         df.drop(f"{col}DragnoType", axis=1, inplace=True)
@@ -108,11 +108,21 @@ def preprocess_jungle(
             df,
             pd.get_dummies(
                 df[["white_piece0_advanced", "black_piece0_advanced"]], drop_first=True
-            ),
+            )
+            * 1,
         ],
         axis=1,
     )
-    df.drop(["white_piece0_advanced", "black_piece0_advanced"], axis=1, inplace=True)
+    df.drop(
+        [
+            "white_piece0_advanced",
+            "black_piece0_advanced",
+            "white_piece0_in_water",
+            "black_piece0_in_water",
+        ],
+        axis=1,
+        inplace=True,
+    )
     df = df.apply(pd.to_numeric)
 
     return split_with_preprocess(
