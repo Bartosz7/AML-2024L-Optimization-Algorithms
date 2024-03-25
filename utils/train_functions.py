@@ -18,17 +18,17 @@ def train_and_eval(
 ):
     """Train models for a given train and test sets"""
     # IWLS
-    l_iwls_vals, best_beta_iwls = IWLS(X_train, y_train, n_iter=100)
+    l_iwls_vals, best_beta_iwls = IWLS(X_train, y_train, n_iter=500)
     iwls_test_preds = 1 * (calc_pi(X_test, best_beta_iwls) > 0.5)
     iwls_acc = balanced_accuracy_score(y_test, iwls_test_preds)
     # SGD
     l_sgd_vals, best_beta_sgd = GD(
-        X_train, y_train, 0.0002, n_epoch=100, use_adam=False
+        X_train, y_train, 0.0002, n_epoch=500, use_adam=False
     )
     sgd_test_preds = 1 * (calc_pi(X_test, best_beta_sgd) > 0.5)
     sgd_acc = balanced_accuracy_score(y_test, sgd_test_preds)
     # ADAM
-    l_adam_vals, best_beta_adam = GD(X_train, y_train, 0.0002, n_epoch=100)
+    l_adam_vals, best_beta_adam = GD(X_train, y_train, 0.0002, n_epoch=500)
     adam_test_preds = 1 * (calc_pi(X_test, best_beta_adam) > 0.5)
     adam_acc = balanced_accuracy_score(y_test, adam_test_preds)
 

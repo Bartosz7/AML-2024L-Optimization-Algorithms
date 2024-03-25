@@ -103,6 +103,8 @@ def GD(
     log_like = log_likelihood(X, y, np.expand_dims(best_w, 1))
     history.append(log_like)
 
+    best_log_like = 10000000000
+
     # ADAM initialization
     M = np.zeros(len(w_init))
     R = np.zeros(len(w_init))
@@ -111,7 +113,9 @@ def GD(
 
     #     if print_likeli:
     #         print("Minus log likelihood", log_like)
-    for i in tqdm(range(n_epoch), "Epochs"):
+    no_change_counter = 0
+    tqdm_text = "ADAM" if use_adam else "SGD"
+    for i in tqdm(range(n_epoch), f"{tqdm_text}"):
         batches = make_batches(X, y, batch_size)
         for j in range(len(batches[0])):
             t += 1
@@ -135,7 +139,13 @@ def GD(
             else:
                 best_w = best_w - learning_rate * J
         log_like = log_likelihood(X, y, np.expand_dims(best_w, 1))
+        if log_like < best_log_like:
+            best_log_like = log_like
+            no_change_counter = 0
+        else:
+            no_change_counter += 1
         history.append(log_like)
-    #         if print_likeli:
-    #             print("Minus log likelihood", log_like)
+
+        if no_change_counter > 5:
+            break
     return history, best_w

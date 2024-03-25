@@ -10,21 +10,25 @@ def IWLS(X, y, n_iter=10, print_likeli=True):
     beta = np.linalg.inv(X.T @ X) @ X.T @ y
     # beta = np.zeros((X.shape[1], 1))
     pi = calc_pi(X, beta)
-    l_prev = log_likelihood(X, y, beta)
-    #     if print_likeli:
-    #         print(f"Starting Log likelihood is: {l_prev}")
-    l_vals = [l_prev]
-    for i in tqdm(range(n_iter), "Iterations"):
+    l_vals = [log_likelihood(X, y, beta)]
+
+    best_l = 100000000
+    no_change_counter = 0
+
+    for i in tqdm(range(n_iter), "IWLS"):
         W = np.diag((pi * (1 - pi)).T[0])
         beta = beta + np.linalg.inv(X.T @ W @ X) @ X.T @ (y - pi)
         pi = calc_pi(X, beta)
         l = log_likelihood(X, y, beta)
-        l_diff = abs(l - l_prev)
-        l_prev = l
-        #         if print_likeli:
-        #             print(f"Log likelihood is: {l}")
         l_vals.append(l)
-    #         if l_diff < 1:
-    #             break
+
+        if l < best_l:
+            best_l = l
+            no_change_counter = 0
+        else:
+            no_change_counter += 1
+
+        if no_change_counter > 5:
+            break
 
     return l_vals, beta
