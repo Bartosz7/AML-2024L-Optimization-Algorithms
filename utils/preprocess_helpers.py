@@ -11,7 +11,7 @@ def one_hot_encode(df: pd.DataFrame):
     """One hot encoding for object type columns in given data frame."""
     for column in df:
         if is_object_dtype(df[column]):
-            dummies = pd.get_dummies(df[column], prefix=column)
+            dummies = pd.get_dummies(df[column], prefix=column) * 1
             if np.sum(df[column].isna()) == 0:
                 dummies = dummies.iloc[:, :-1]
             df = df.drop(column, axis=1)
@@ -84,13 +84,13 @@ def split_with_preprocess(
     """
     train, test = train_test_split(df, test_size=0.2)  # random_state=RANDOM_STATE
 
+    if additional_preprocess:
+        train, test = additional_preprocess(train, test)
+
     y_train = train[target_col_name].to_numpy()
     y_test = test[target_col_name].to_numpy()
     _X_train = train.drop(target_col_name, axis=1)
     _X_test = test.drop(target_col_name, axis=1)
-
-    if additional_preprocess:
-        _X_train, _X_test = additional_preprocess(_X_train, _X_test)
 
     print(f"Removing multicolinear columns in {dataset_name} dataset...")
     indices_to_drop = _calculate_vif(_X_train)

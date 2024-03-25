@@ -15,7 +15,6 @@ def preprocess_booking(filename: str = "data/booking.csv", interactions: bool = 
     label_encoder = preprocessing.LabelEncoder()
     booking["room type"] = label_encoder.fit_transform(booking["room type"])
     booking = one_hot_encode(booking)
-
     return split_with_preprocess(
         df=booking,
         target_col_name="booking status",
