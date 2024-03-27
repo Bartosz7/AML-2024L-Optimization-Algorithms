@@ -8,6 +8,7 @@ def IWLS(X, y, n_iter=10, print_likeli=True):
     """Iterative Weighted Least Squares method."""
     #     X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
     beta = np.linalg.inv(X.T @ X) @ X.T @ y
+    global_best_weights = None
     # beta = np.zeros((X.shape[1], 1))
     pi = calc_pi(X, beta)
     l_vals = [log_likelihood(X, y, beta)]
@@ -24,6 +25,7 @@ def IWLS(X, y, n_iter=10, print_likeli=True):
 
         if l < best_l:
             best_l = l
+            global_best_weights = beta
             no_change_counter = 0
         else:
             no_change_counter += 1
@@ -31,4 +33,4 @@ def IWLS(X, y, n_iter=10, print_likeli=True):
         if no_change_counter > 5:
             break
 
-    return l_vals, beta
+    return l_vals, global_best_weights

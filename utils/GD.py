@@ -98,6 +98,7 @@ def GD(
     history = []  # to keep track of loss values
     #     w_init = np.ones(X.shape[1])
     w_init = (np.linalg.inv(X.T @ X) @ X.T @ y).T[0]
+    global_best_weights = None
     best_w = w_init.copy()
     n_samples = X.shape[0]
     log_like = log_likelihood(X, y, np.expand_dims(best_w, 1))
@@ -141,6 +142,7 @@ def GD(
         log_like = log_likelihood(X, y, np.expand_dims(best_w, 1))
         if log_like < best_log_like:
             best_log_like = log_like
+            global_best_weights = best_w
             no_change_counter = 0
         else:
             no_change_counter += 1
@@ -148,4 +150,4 @@ def GD(
 
         if no_change_counter > 5:
             break
-    return history, best_w
+    return history, global_best_weights
