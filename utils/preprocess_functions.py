@@ -44,6 +44,21 @@ def preprocess_churn(filename: str = "data/churn.csv", interactions: bool = Fals
     )
 
 
+def preprocess_diabetes(filename: str = "data/diabetes.arff", interactions: bool = False):
+    """Preprocessing for diabetes.arff dataset."""
+    df = pd.DataFrame(arff.loadarff(filename)[0])
+    str_df = df.select_dtypes([object]).astype(str)
+    df[str_df.columns] = str_df
+    df['class'] = df['class'].apply(lambda x: 1 if x == 'tested_positive' else 0)
+
+    return split_with_preprocess(
+        df=df,
+        target_col_name="class",
+        dataset_name="diabetes",
+        interactions=interactions
+    )
+
+
 def preprocess_employee(
     filename: str = "data/employee.csv", interactions: bool = False
 ):
@@ -130,6 +145,19 @@ def preprocess_jungle(
     )
 
 
+def preprocess_ionosphere(filename: str = "ionosphere.data", interactions: bool = False):
+    """Preprocessing for ionosphere.data dataset."""
+    df = pd.read_csv(filename, header=None)
+    df = df.rename(columns={34: "class"})
+    df["class"] = df["class"].map({"g": 0, "b": 1})
+    return split_with_preprocess(
+        df=df,
+        target_col_name="class",
+        dataset_name="ionosphere",
+        interactions=interactions,
+    )
+
+
 def preprocess_water(
     filename: str = "data/water_quality.csv", interactions: bool = False
 ):
@@ -141,5 +169,33 @@ def preprocess_water(
         target_col_name="is_safe",
         dataset_name="water",
         additional_preprocess=impute_water,
+        interactions=interactions,
+    )
+
+
+def preprocess_seeds(filename: str = "data/seeds.txt", interactions: bool = False):
+    """Preprocessing for seeds.txt dataset."""
+    cols = ["A", "P", "C", "kernel_length", "kernel_width",
+            "asymmetry_coef", "kernel_groove_length", "class"]
+    df = pd.read_csv(filename, sep=r"\s+", header=None, names=cols)
+    # combine classes 1, 3 (similar) and 2 (different) based on pairplot
+    df["class"] = df["class"].map({1: 0, 2: 1, 3: 2})
+    return split_with_preprocess(
+        df=df,
+        target_col_name="class",
+        dataset_name="seeds",
+        interactions=interactions,
+    )
+
+
+def preprocess_sonar(filename: str = "data/sonar.data", interactions: bool = False):
+    """Preprocessing for sonar.data dataset."""
+    df = pd.read_csv(filename, header=None)
+    df = df.rename(columns={60: "class"})
+    df["class"] = df["class"].map({"R": 0, "M": 1})
+    return split_with_preprocess(
+        df=df,
+        target_col_name="class",
+        dataset_name="sonar",
         interactions=interactions,
     )
