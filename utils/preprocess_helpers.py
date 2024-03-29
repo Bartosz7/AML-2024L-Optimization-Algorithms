@@ -82,6 +82,9 @@ def split_with_preprocess(
     """Train test split for given data frame including some additional preprocessing,
     removal of multicolinear columns using VIF, generating interactions, and adding column of ones.
     """
+    # TODO: not sure if this is the best way to handle this, better
+    # split the preprocessing and train-test split into separate functions?
+    # but keep the
     train, test = train_test_split(df, test_size=0.2)  # random_state=RANDOM_STATE
 
     if additional_preprocess:
@@ -91,7 +94,7 @@ def split_with_preprocess(
     y_test = test[target_col_name].to_numpy()
     _X_train = train.drop(target_col_name, axis=1)
     _X_test = test.drop(target_col_name, axis=1)
-
+    # TODO: vif only on training set? maybe should be on both? What in case of small datasets?
     print(f"Removing multicolinear columns in {dataset_name} dataset...")
     indices_to_drop = _calculate_vif(_X_train)
 
