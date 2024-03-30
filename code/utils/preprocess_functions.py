@@ -3,11 +3,14 @@ from scipy.io import arff
 from sklearn import preprocessing
 
 from utils.preprocess_helpers import impute_water, one_hot_encode, split_with_preprocess
+from pathlib import Path
 
-RANDOM_STATE = 123
+RANDOM_STATE = 123  # TODO: where is it used?
+DATA_DIR = Path("../data")
 
 
-def preprocess_booking(filename: str = "data/booking.csv", interactions: bool = False):
+def preprocess_booking(filename: str = DATA_DIR / "booking.csv",
+                       interactions: bool = False):
     """Preprocessing for booking.csv dataset."""
     booking = pd.read_csv(filename).drop(["Booking_ID", "date of reservation"], axis=1)
     booking["market segment type"] = 1 * (booking["market segment type"] == "Online")
@@ -23,7 +26,8 @@ def preprocess_booking(filename: str = "data/booking.csv", interactions: bool = 
     )
 
 
-def preprocess_churn(filename: str = "data/churn.csv", interactions: bool = False):
+def preprocess_churn(filename: str = DATA_DIR / "churn.csv",
+                     interactions: bool = False):
     """Preprocessing for churn.csv dataset."""
     churn = pd.read_csv(filename)
     churn["FrequentFlyer"] = 1 * (churn["FrequentFlyer"] == "Yes")
@@ -44,7 +48,8 @@ def preprocess_churn(filename: str = "data/churn.csv", interactions: bool = Fals
     )
 
 
-def preprocess_diabetes(filename: str = "data/diabetes.arff", interactions: bool = False):
+def preprocess_diabetes(filename: str = DATA_DIR / "diabetes.arff",
+                        interactions: bool = False):
     """Preprocessing for diabetes.arff dataset."""
     df = pd.DataFrame(arff.loadarff(filename)[0])
     str_df = df.select_dtypes([object]).astype(str)
@@ -60,7 +65,8 @@ def preprocess_diabetes(filename: str = "data/diabetes.arff", interactions: bool
 
 
 def preprocess_employee(
-    filename: str = "data/employee.csv", interactions: bool = False
+    filename: str = DATA_DIR / "employee.csv",
+    interactions: bool = False
 ):
     """Preprocessing for employee.csv dataset."""
     df = pd.read_csv(filename)
@@ -79,7 +85,8 @@ def preprocess_employee(
 
 
 def preprocess_challenger(
-    filename: str = "data/challenger_lol.csv", interactions: bool = False
+    filename: str = DATA_DIR / "challenger_lol.csv",
+    interactions: bool = False
 ):
     """Preprocessing for challenger_lol.csv dataset."""
     df = pd.read_csv(filename)
@@ -105,7 +112,8 @@ def preprocess_challenger(
 
 
 def preprocess_jungle(
-    filename: str = "data/jungle_chess.arff", interactions: bool = False
+    filename: str = DATA_DIR / "jungle_chess.arff",
+    interactions: bool = False
 ):
     """Preprocessing for jungle_chess.arff dataset."""
     df = arff.loadarff(filename)
@@ -145,7 +153,8 @@ def preprocess_jungle(
     )
 
 
-def preprocess_ionosphere(filename: str = "ionosphere.data", interactions: bool = False):
+def preprocess_ionosphere(filename: str = DATA_DIR / "ionosphere.data",
+                          interactions: bool = False):
     """Preprocessing for ionosphere.data dataset."""
     df = pd.read_csv(filename, header=None)
     df = df.rename(columns={34: "class"})
@@ -159,7 +168,8 @@ def preprocess_ionosphere(filename: str = "ionosphere.data", interactions: bool 
 
 
 def preprocess_water(
-    filename: str = "data/water_quality.csv", interactions: bool = False
+    filename: str = DATA_DIR / "water_quality.csv", 
+    interactions: bool = False
 ):
     """Preprocessing for water_quality.csv dataset."""
     water = pd.read_csv(filename)
@@ -173,7 +183,8 @@ def preprocess_water(
     )
 
 
-def preprocess_seeds(filename: str = "data/seeds.txt", interactions: bool = False):
+def preprocess_seeds(filename: str = DATA_DIR / "seeds.txt",
+                     interactions: bool = False):
     """Preprocessing for seeds.txt dataset."""
     cols = ["A", "P", "C", "kernel_length", "kernel_width",
             "asymmetry_coef", "kernel_groove_length", "class"]
@@ -188,7 +199,7 @@ def preprocess_seeds(filename: str = "data/seeds.txt", interactions: bool = Fals
     )
 
 
-def preprocess_sonar(filename: str = "data/sonar.data", interactions: bool = False):
+def preprocess_sonar(filename: str = DATA_DIR / "sonar.data", interactions: bool = False):
     """Preprocessing for sonar.data dataset."""
     df = pd.read_csv(filename, header=None)
     df = df.rename(columns={60: "class"})
