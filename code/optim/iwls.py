@@ -3,6 +3,7 @@ iwls.py
 
 Iterative Weighted Least Squares (IWLS) optimizer implementation.
 """
+
 import numpy as np
 from tqdm import tqdm
 from .util import calc_pi, log_likelihood
@@ -43,9 +44,10 @@ class IWLS(Optimizer):
         pi = calc_pi(X, beta)
         self._loss_history = [log_likelihood(X, y, beta)]
 
-        best_log_like = float('inf')
-        no_change_counter = 0
+        best_log_like = float("inf")
 
+        early_stop = False
+        no_change_counter = 0
         for _ in tqdm(range(self.n_iter), "IWLS"):
             W = np.diag((pi * (1 - pi)).T[0])
             beta = beta + np.linalg.inv(X.T @ W @ X) @ X.T @ (y - pi)
@@ -60,7 +62,10 @@ class IWLS(Optimizer):
             else:
                 no_change_counter += 1
 
-            if no_change_counter > 5:
+            if no_change_counter > self.tolerance:
+                early_stop = True
                 break
+        if not early_stop:
+            self._global_best_weights = beta
 
         return self.loss_history, self.global_best_weights
