@@ -6,8 +6,7 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import balanced_accuracy_score
 
-from utils.GD import GD
-from utils.IWLS import IWLS
+from optim import GD, IWLS, ADAM
 from utils.train_helpers import calc_pi
 
 warnings.filterwarnings("ignore")
@@ -18,17 +17,18 @@ def train_and_eval(
 ):
     """Train models for a given train and test sets"""
     # IWLS
-    l_iwls_vals, best_beta_iwls = IWLS(X_train, y_train, n_iter=500)
+    iwls = IWLS(n_iter=500)
+    l_iwls_vals, best_beta_iwls = iwls.optimize(X_train, y_train)
     iwls_test_preds = 1 * (calc_pi(X_test, best_beta_iwls) > 0.5)
     iwls_acc = balanced_accuracy_score(y_test, iwls_test_preds)
     # SGD
-    l_sgd_vals, best_beta_sgd = GD(
-        X_train, y_train, 0.0002, n_epoch=500, use_adam=False
-    )
+    gd = GD(learning_rate=0.0002, n_epoch=500)
+    l_sgd_vals, best_beta_sgd = gd.optimize(X_train, y_train)
     sgd_test_preds = 1 * (calc_pi(X_test, best_beta_sgd) > 0.5)
     sgd_acc = balanced_accuracy_score(y_test, sgd_test_preds)
     # ADAM
-    l_adam_vals, best_beta_adam = GD(X_train, y_train, 0.0002, n_epoch=500)
+    adam = ADAM(learning_rate=0.0002, n_epoch=500)
+    l_adam_vals, best_beta_adam = adam.optimize(X_train, y_train)
     adam_test_preds = 1 * (calc_pi(X_test, best_beta_adam) > 0.5)
     adam_acc = balanced_accuracy_score(y_test, adam_test_preds)
 
