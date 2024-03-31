@@ -5,8 +5,14 @@ from typing import Callable
 import numpy as np
 from optim import ADAM, GD, IWLS
 from sklearn.linear_model import LogisticRegression
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import balanced_accuracy_score
-from utils.train_helpers import calc_pi
+
+from optim import GD, IWLS, ADAM
+from utils.train_helpers import calc_pi, train_eval_scikit_model
 
 warnings.filterwarnings("ignore")
 
@@ -34,17 +40,57 @@ def train_and_eval(
     adam_acc = balanced_accuracy_score(y_test, adam_test_preds)
 
     # LR from scikit
-    lr = LogisticRegression()
-    lr.fit(X_train, y_train.T[0])
-    lr_preds = lr.predict(X_test)
-    lr_acc = balanced_accuracy_score(y_test, np.expand_dims(lr_preds, 1))
+    lr_acc = train_eval_scikit_model(
+        X_train, y_train, X_test, y_test, scikit_model=LogisticRegression()
+    )
+    # QDA from scikit
+    qda_acc = train_eval_scikit_model(
+        X_train, y_train, X_test, y_test, scikit_model=QDA()
+    )
+    # LDA from scikit
+    lda_acc = train_eval_scikit_model(
+        X_train, y_train, X_test, y_test, scikit_model=LDA()
+    )
+    # Decision tree from scikit
+    dt_acc = train_eval_scikit_model(
+        X_train,
+        y_train,
+        X_test,
+        y_test,
+        scikit_model=DecisionTreeClassifier(max_depth=5),
+    )
+    # Random forest from scikit
+    rf_acc = train_eval_scikit_model(
+        X_train,
+        y_train,
+        X_test,
+        y_test,
+        scikit_model=RandomForestClassifier(max_depth=5),
+    )
 
     print(f"Balanced accuracy of SGD without optimizer is: {sgd_acc}")
     print(f"Balanced accuracy of GD with ADAM is: {adam_acc}")
     print(f"Balanced accuracy of IWLS is: {iwls_acc}")
     print(f"Balanced accuracy of LR from Scikit is {lr_acc}")
+    print(f"Balanced accuracy of QDA from Scikit is {qda_acc}")
+    print(f"Balanced accuracy of LDA with ADAM is: {lda_acc}")
+    print(f"Balanced accuracy of Decision Tree is: {dt_acc}")
+    print(f"Balanced accuracy of Random Forest from Scikit is {rf_acc}")
 
-    return l_iwls_vals, l_sgd_vals, l_adam_vals, iwls_acc, sgd_acc, adam_acc
+    l_vals_dict = {"iwls": l_iwls_vals, "sgd": l_sgd_vals, "adam": l_adam_vals}
+
+    acc_vals_dict = {
+        "iwls": iwls_acc,
+        "sgd": sgd_acc,
+        "adam": adam_acc,
+        "lr": lr_acc,
+        "qda": qda_acc,
+        "lda": lda_acc,
+        "dt": dt_acc,
+        "rf": rf_acc,
+    }
+
+    return l_vals_dict, acc_vals_dict
 
 
 def cv(preprocess_fun: Callable, n_splits: int = 5, **kwargs) -> tuple[
@@ -68,33 +114,34 @@ def cv(preprocess_fun: Callable, n_splits: int = 5, **kwargs) -> tuple[
     Returns:
         TODO
     """
-    sgd_acc_list = []
-    adam_acc_list = []
-    iwls_acc_list = []
-    l_iwls_vals_list = []
-    l_sgd_vals_list = []
-    l_adam_vals_list = []
+    acc_vals_splits_dict = {
+        "iwls": [None for i in range(n_splits)],
+        "sgd": [None for i in range(n_splits)],
+        "adam": [None for i in range(n_splits)],
+        "lr": [None for i in range(n_splits)],
+        "qda": [None for i in range(n_splits)],
+        "lda": [None for i in range(n_splits)],
+        "dt": [None for i in range(n_splits)],
+        "rf": [None for i in range(n_splits)],
+    }
+
+    l_vals_splits_dict = {
+        "iwls": [None for i in range(n_splits)],
+        "sgd": [None for i in range(n_splits)],
+        "adam": [None for i in range(n_splits)],
+    }
+
     for i in range(n_splits):
         print(f"CV split {i+1}")
 
         X_train, y_train, X_test, y_test = preprocess_fun(**kwargs)
         time.sleep(1)  # to remove visual bug with tqdm
-        l_iwls_vals, l_sgd_vals, l_adam_vals, iwls_acc, sgd_acc, adam_acc = (
-            train_and_eval(X_train, y_train, X_test, y_test)
-        )
+        l_vals_dict, acc_vals_dict = train_and_eval(X_train, y_train, X_test, y_test)
 
-        sgd_acc_list.append(sgd_acc)
-        adam_acc_list.append(adam_acc)
-        iwls_acc_list.append(iwls_acc)
-        l_iwls_vals_list.append(l_iwls_vals)
-        l_sgd_vals_list.append(l_sgd_vals)
-        l_adam_vals_list.append(l_adam_vals)
+        for key in l_vals_splits_dict:
+            l_vals_splits_dict[key][i] = l_vals_dict[key]
 
-    return (
-        sgd_acc_list,
-        adam_acc_list,
-        iwls_acc_list,
-        l_iwls_vals_list,
-        l_sgd_vals_list,
-        l_adam_vals_list,
-    )
+        for key in acc_vals_splits_dict:
+            acc_vals_splits_dict[key][i] = acc_vals_dict[key]
+
+    return l_vals_splits_dict, acc_vals_splits_dict

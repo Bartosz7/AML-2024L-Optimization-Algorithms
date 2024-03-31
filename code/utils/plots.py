@@ -39,19 +39,24 @@ def plot_figures_for_cv(l_iwls_vals_list, l_sgd_vals_list, l_adam_vals_list) -> 
         plt.show()
 
 
-def plot_acc_boxplots(sgd_acc_list, adam_acc_list, iwls_acc_list) -> None:
+def plot_acc_boxplots(acc_vals_splits_dict):
     """TODO"""
+    acc_final_list = []
+    model_names_list = []
+
+    for key, value in acc_vals_splits_dict.items():
+        acc_final_list += value
+        model_names_list += [key for i in range(len(value))]
+
     df = pd.DataFrame(
         {
-            "acc": sgd_acc_list + adam_acc_list + iwls_acc_list,
-            "model": ["sgd" for i in range(len(sgd_acc_list))]
-            + ["adam" for i in range(len(adam_acc_list))]
-            + ["iwls" for i in range(len(iwls_acc_list))],
+            "acc": acc_final_list,
+            "model": model_names_list,
         }
     )
 
     sns.boxplot(data=df, x="model", y="acc").set(
-        title=f"Models accuracy for {len(sgd_acc_list)} train test splits",
+        title=f"Models accuracy for {len(acc_vals_splits_dict['iwls'])} train test splits",
         xlabel="Models",
         ylabel="Accuracy",
     )
