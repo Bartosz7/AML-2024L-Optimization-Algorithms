@@ -10,83 +10,48 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import balanced_accuracy_score
 from sklearn.tree import DecisionTreeClassifier
-from utils.train_helpers import calc_pi, train_eval_scikit_model
 
 warnings.filterwarnings("ignore")
 
 
 def train_and_eval(
-    X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, y_test: np.ndarray
+    X_train: np.ndarray, y_train: np.ndarray,
+    X_test: np.ndarray, y_test: np.ndarray
 ) -> tuple[dict[str, list[float]], dict[str, float]]:
     """Train models for a given train and test sets"""
-    # IWLS
-    iwls = IWLS(n_iter=500)
-    l_iwls_vals, best_beta_iwls = iwls.optimize(X_train, y_train)
-    iwls_test_preds = 1 * (calc_pi(X_test, best_beta_iwls) > 0.5)
-    iwls_acc = balanced_accuracy_score(y_test, iwls_test_preds)
 
-    # SGD
-    gd = GD(learning_rate=0.0002, n_epoch=500)
-    l_sgd_vals, best_beta_sgd = gd.optimize(X_train, y_train)
-    sgd_test_preds = 1 * (calc_pi(X_test, best_beta_sgd) > 0.5)
-    sgd_acc = balanced_accuracy_score(y_test, sgd_test_preds)
+    acc_vals_dict = {}
+    l_vals_dict = {}
 
-    # ADAM
-    adam = ADAM(learning_rate=0.0002, n_epoch=500)
-    l_adam_vals, best_beta_adam = adam.optimize(X_train, y_train)
-    adam_test_preds = 1 * (calc_pi(X_test, best_beta_adam) > 0.5)
-    adam_acc = balanced_accuracy_score(y_test, adam_test_preds)
-
-    # LR from scikit
-    lr_acc = train_eval_scikit_model(
-        X_train, y_train, X_test, y_test, scikit_model=LogisticRegression()
-    )
-    # QDA from scikit
-    qda_acc = train_eval_scikit_model(
-        X_train, y_train, X_test, y_test, scikit_model=QDA()
-    )
-    # LDA from scikit
-    lda_acc = train_eval_scikit_model(
-        X_train, y_train, X_test, y_test, scikit_model=LDA()
-    )
-    # Decision tree from scikit
-    dt_acc = train_eval_scikit_model(
-        X_train,
-        y_train,
-        X_test,
-        y_test,
-        scikit_model=DecisionTreeClassifier(max_depth=5),
-    )
-    # Random forest from scikit
-    rf_acc = train_eval_scikit_model(
-        X_train,
-        y_train,
-        X_test,
-        y_test,
-        scikit_model=RandomForestClassifier(max_depth=5),
-    )
-
-    print(f"Balanced accuracy of SGD without optimizer is: {sgd_acc}")
-    print(f"Balanced accuracy of GD with ADAM is: {adam_acc}")
-    print(f"Balanced accuracy of IWLS is: {iwls_acc}")
-    print(f"Balanced accuracy of LR from Scikit is {lr_acc}")
-    print(f"Balanced accuracy of QDA from Scikit is {qda_acc}")
-    print(f"Balanced accuracy of LDA with ADAM is: {lda_acc}")
-    print(f"Balanced accuracy of Decision Tree is: {dt_acc}")
-    print(f"Balanced accuracy of Random Forest from Scikit is {rf_acc}")
-
-    l_vals_dict = {"iwls": l_iwls_vals, "sgd": l_sgd_vals, "adam": l_adam_vals}
-
-    acc_vals_dict = {
-        "iwls": iwls_acc,
-        "sgd": sgd_acc,
-        "adam": adam_acc,
-        "lr": lr_acc,
-        "qda": qda_acc,
-        "lda": lda_acc,
-        "dt": dt_acc,
-        "rf": rf_acc,
+    # Custom LR models with different optimizers
+    # IWLS, SGD, ADAM
+    custom_models = {
+        "iwls": IWLS(n_iter=500),
+        "sgd": GD(learning_rate=0.0002, n_epoch=500),
+        "adam": ADAM(learning_rate=0.0002, n_epoch=500),
     }
+
+    for name, model in custom_models.items():
+        model.fit(X_train, y_train)
+        l_vals_dict[name] = model.loss_history
+        acc_vals_dict[name] = balanced_accuracy_score(y_test,
+                                                      model.predict(X_test))
+    # Scikit-learn models
+    scikit_models = {
+        "lr": LogisticRegression(),
+        "qda": QDA(),
+        "lda": LDA(),
+        "dt": DecisionTreeClassifier(max_depth=5),
+        "rf": RandomForestClassifier(max_depth=5),
+    }
+
+    for name, model in scikit_models.items():
+        model.fit(X_train, y_train.T[0])
+        y_pred = np.expand_dims(model.predict(X_test), 1)
+        acc_vals_dict[name] = balanced_accuracy_score(y_test, y_pred)
+
+    for key, val in acc_vals_dict.items():
+        print(f"Balanced accuracy of {key} is: {val}")
 
     return l_vals_dict, acc_vals_dict
 

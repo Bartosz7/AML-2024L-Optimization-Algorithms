@@ -51,7 +51,7 @@ class ADAM(Optimizer):
         self.eps = eps
         self.tolerance = tolerance
 
-    def optimize(self, X, y):
+    def fit(self, X, y):
         """
         Runs the ADAM optimizer on the given data.
 

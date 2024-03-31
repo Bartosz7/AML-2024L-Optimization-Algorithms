@@ -53,7 +53,7 @@ class GD(Optimizer):
         self.w_init = w_init
         self.tolerance = tolerance
 
-    def optimize(self, X, y):
+    def fit(self, X, y):
         self.reset()  # resets history and best weights
         if self.w_init is None:
             self.w_init = (np.linalg.inv(X.T @ X) @ X.T @ y).T[0]

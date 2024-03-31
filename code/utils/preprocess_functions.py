@@ -1,9 +1,6 @@
 from pathlib import Path
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    import numpy as np
-
+# TODO: typechecking line for numpy removed?
+import numpy as np
 import pandas as pd
 from scipy.io import arff
 from sklearn import preprocessing

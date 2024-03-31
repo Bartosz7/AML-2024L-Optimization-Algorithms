@@ -29,7 +29,7 @@ class IWLS(Optimizer):
         self.n_iter = n_iter
         self.tolerance = tolerance
 
-    def optimize(self, X, y, standardize=False):
+    def fit(self, X, y, standardize=False):
         """
         Runs the IWLS optimizer on the given data.
 

@@ -21,9 +21,26 @@ class Optimizer(ABC):
         self._global_best_weights: Optional[np.ndarray] = None
 
     @abstractmethod
-    def optimize(self, X: np.ndarray, y: np.ndarray) -> tuple[list[float], np.ndarray]:
-        """Optimize the given problem.
-        To be overridden by the derived classes."""
+    def fit(self,
+            X: np.ndarray,
+            y: np.ndarray) -> tuple[list[float], np.ndarray]:
+        """Optimize the LR problem.
+        To be overridden by the derived classes.
+
+        Returns:
+            tuple[list[float], np.ndarray]: The loss history and the best weights
+        """
+
+    def predict(self, X: np.ndarray, weights: np.ndarray = None) -> np.ndarray:
+        """Calculates the odds and predicts the binary class labels.
+
+        Returns:
+            np.ndarray: The predicted binary class labels
+        """
+        weights = self._global_best_weights if weights is None else weights
+        exp = np.exp(X @ weights)
+        odds = exp / (1 + exp)
+        return 1 * (odds > 0.5)
 
     def reset(self) -> None:
         """Reset the optimizer's state."""
