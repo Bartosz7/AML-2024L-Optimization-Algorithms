@@ -17,7 +17,7 @@ warnings.filterwarnings("ignore")
 
 def train_and_eval(
     X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, y_test: np.ndarray
-) -> tuple[list[float], list[float], list[float], float, float, float]:
+) -> tuple[dict[str, list[float]], dict[str, float]]:
     """Train models for a given train and test sets"""
     # IWLS
     iwls = IWLS(n_iter=500)
@@ -91,14 +91,7 @@ def train_and_eval(
     return l_vals_dict, acc_vals_dict
 
 
-def cv(preprocess_fun: Callable, n_splits: int = 5, **kwargs) -> tuple[
-    list[float],
-    list[float],
-    list[float],
-    list[list[float]],
-    list[list[float]],
-    list[list[float]],
-]:
+def cv(preprocess_fun: Callable, n_splits: int = 5, **kwargs):
     """Cross-validation for every model used to evaluate balanced accuracy.
 
     Arguments:

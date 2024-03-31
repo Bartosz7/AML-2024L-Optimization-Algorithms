@@ -14,7 +14,7 @@ DATA_DIR = Path("../data")
 
 
 def preprocess_booking(
-    filename: str = DATA_DIR / "booking.csv", interactions: bool = False
+    filename: Path = DATA_DIR / "booking.csv", interactions: bool = False
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for booking.csv dataset."""
     booking = pd.read_csv(filename).drop(["Booking_ID", "date of reservation"], axis=1)
@@ -32,7 +32,7 @@ def preprocess_booking(
 
 
 def preprocess_churn(
-    filename: str = DATA_DIR / "churn.csv", interactions: bool = False
+    filename: Path = DATA_DIR / "churn.csv", interactions: bool = False
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for churn.csv dataset."""
     churn = pd.read_csv(filename)
@@ -55,7 +55,7 @@ def preprocess_churn(
 
 
 def preprocess_diabetes(
-    filename: str = DATA_DIR / "diabetes.arff", interactions: bool = False
+    filename: Path = DATA_DIR / "diabetes.arff", interactions: bool = False
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for diabetes.arff dataset."""
     df = pd.DataFrame(arff.loadarff(filename)[0])
@@ -72,7 +72,7 @@ def preprocess_diabetes(
 
 
 def preprocess_employee(
-    filename: str = DATA_DIR / "employee.csv", interactions: bool = False
+    filename: Path = DATA_DIR / "employee.csv", interactions: bool = False
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for employee.csv dataset."""
     df = pd.read_csv(filename)
@@ -91,7 +91,7 @@ def preprocess_employee(
 
 
 def preprocess_challenger(
-    filename: str = DATA_DIR / "challenger_lol.csv", interactions: bool = False
+    filename: Path = DATA_DIR / "challenger_lol.csv", interactions: bool = False
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for challenger_lol.csv dataset."""
     df = pd.read_csv(filename)
@@ -117,7 +117,7 @@ def preprocess_challenger(
 
 
 def preprocess_jungle(
-    filename: str = DATA_DIR / "jungle_chess.arff", interactions: bool = False
+    filename: Path = DATA_DIR / "jungle_chess.arff", interactions: bool = False
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for jungle_chess.arff dataset."""
     df = arff.loadarff(filename)
@@ -158,7 +158,7 @@ def preprocess_jungle(
 
 
 def preprocess_ionosphere(
-    filename: str = DATA_DIR / "ionosphere.data", interactions: bool = False
+    filename: Path = DATA_DIR / "ionosphere.data", interactions: bool = False
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for ionosphere.data dataset."""
     df = pd.read_csv(filename, header=None)
@@ -173,7 +173,7 @@ def preprocess_ionosphere(
 
 
 def preprocess_water(
-    filename: str = DATA_DIR / "water_quality.csv", interactions: bool = False
+    filename: Path = DATA_DIR / "water_quality.csv", interactions: bool = False
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for water_quality.csv dataset."""
     water = pd.read_csv(filename)
@@ -188,7 +188,7 @@ def preprocess_water(
 
 
 def preprocess_seeds(
-    filename: str = DATA_DIR / "seeds.txt", interactions: bool = False
+    filename: Path = DATA_DIR / "seeds.txt", interactions: bool = False
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for seeds.txt dataset."""
     cols = [
@@ -213,7 +213,7 @@ def preprocess_seeds(
 
 
 def preprocess_sonar(
-    filename: str = DATA_DIR / "sonar.data", interactions: bool = False
+    filename: Path = DATA_DIR / "sonar.data", interactions: bool = False
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for sonar.data dataset."""
     df = pd.read_csv(filename, header=None)

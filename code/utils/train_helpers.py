@@ -19,7 +19,7 @@ def train_eval_scikit_model(
     X_test: np.ndarray,
     y_test: np.ndarray,
     scikit_model,  # TODO: type?,
-):
+) -> float:
     """TODO"""
     model = scikit_model
     model.fit(X_train, y_train.T[0])

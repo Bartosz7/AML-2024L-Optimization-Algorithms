@@ -19,7 +19,7 @@ def one_hot_encode(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def _calculate_vif(X: np.array, thresh: float = 5.0) -> list[int]:
+def _calculate_vif(X: pd.DataFrame, thresh: float = 5.0) -> list[int]:
     """
     Removal of multicolinear columns in given data frame using VIF. Based on:
     https://stats.stackexchange.com/questions/155028/how-to-systematically-remove-collinear-variables-pandas-columns-in-python

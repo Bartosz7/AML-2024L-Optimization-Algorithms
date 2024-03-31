@@ -22,7 +22,7 @@ def log_likelihood(X: np.ndarray, y: np.ndarray, beta: np.ndarray) -> float:
 # pylint: disable=invalid-name
 def make_batches(
     X: np.ndarray, y: np.ndarray, batch_size: int
-) -> tuple[np.ndarray, np.ndarray]:
+) -> tuple[list[np.ndarray], list[np.ndarray]]:
     """Function creates batches for gradient descent algorithm."""
     perm = np.random.permutation(len(y))
     X_perm = X[perm, :]  # pylint: disable=invalid-name
