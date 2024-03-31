@@ -4,14 +4,12 @@ from typing import Callable
 
 import numpy as np
 from optim import ADAM, GD, IWLS
-from sklearn.linear_model import LogisticRegression
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import balanced_accuracy_score
-
-from optim import GD, IWLS, ADAM
+from sklearn.tree import DecisionTreeClassifier
 from utils.train_helpers import calc_pi, train_eval_scikit_model
 
 warnings.filterwarnings("ignore")
