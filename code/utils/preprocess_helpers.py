@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 
 
-def one_hot_encode(df: pd.DataFrame):
+def one_hot_encode(df: pd.DataFrame) -> pd.DataFrame:
     """One hot encoding for object type columns in given data frame."""
     for column in df:
         if is_object_dtype(df[column]):
@@ -19,7 +19,7 @@ def one_hot_encode(df: pd.DataFrame):
     return df
 
 
-def _calculate_vif(X: np.array, thresh: float = 5.0):
+def _calculate_vif(X: np.array, thresh: float = 5.0) -> list[int]:
     """
     Removal of multicolinear columns in given data frame using VIF. Based on:
     https://stats.stackexchange.com/questions/155028/how-to-systematically-remove-collinear-variables-pandas-columns-in-python
@@ -43,7 +43,7 @@ def _calculate_vif(X: np.array, thresh: float = 5.0):
     return variables[:-1]
 
 
-def replace_water_nans(df: pd.DataFrame):
+def replace_water_nans(df: pd.DataFrame) -> pd.DataFrame:
     """Imputation of #NUM! values in water_quality data frame."""
     df["ammonia"] = df["ammonia"].replace("#NUM!", -100)
     df["ammonia"] = df["ammonia"].astype(float)
@@ -56,7 +56,9 @@ def replace_water_nans(df: pd.DataFrame):
     return df
 
 
-def impute_water(water_train, water_test):
+def impute_water(
+    water_train: pd.DataFrame, water_test: pd.DataFrame
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Data imputation in water_quality data frame using column dominant from training set."""
     water_train = replace_water_nans(water_train)
     water_test = replace_water_nans(water_test)
@@ -78,7 +80,7 @@ def split_with_preprocess(
     dataset_name: str,
     additional_preprocess: Optional[Callable] = None,
     interactions: bool = False,
-):
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Train test split for given data frame including some additional preprocessing,
     removal of multicolinear columns using VIF, generating interactions, and adding column of ones.
     """
@@ -111,7 +113,7 @@ def split_with_preprocess(
     return X_train, np.expand_dims(y_train, 1), X_test, np.expand_dims(y_test, 1)
 
 
-def _make_interactions(X: np.ndarray):
+def _make_interactions(X: np.ndarray) -> np.ndarray:
     """Generates interactions as the product of each 2 variables."""
     p = X.shape[1]
     for i in range(p - 1):

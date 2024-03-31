@@ -3,10 +3,14 @@ adam.py
 
 ADAM (Adaptive Moment Estimation) optimiser implementation
 """
+
+from typing import Optional
+
 import numpy as np
 from tqdm import tqdm
+
 from .optim import Optimizer
-from .util import log_likelihood, make_batches, dlogistic
+from .util import dlogistic, log_likelihood, make_batches
 
 
 # pylint: disable=invalid-name
@@ -14,11 +18,17 @@ class ADAM(Optimizer):
     """ADAM (Adaptive Moment Estimation) optimiser implementation
     with logistic loss for binary classification [0,1]."""
 
-    def __init__(self, learning_rate: float, n_epoch: int = 1,
-                 batch_size: int = 1, beta1: float = 0.9,
-                 beta2: float = 0.999, eps: float = 1e-8,
-                 w_init: np.ndarray | None = None,
-                 tolerance: int = 5) -> None:
+    def __init__(
+        self,
+        learning_rate: float,
+        n_epoch: int = 1,
+        batch_size: int = 1,
+        beta1: float = 0.9,
+        beta2: float = 0.999,
+        eps: float = 1e-8,
+        w_init: Optional[np.ndarray] = None,
+        tolerance: int = 5,
+    ) -> None:
         """
         Initializes ADAM optimizer with the given parameters.
 
@@ -54,7 +64,7 @@ class ADAM(Optimizer):
             self.w_init = (np.linalg.inv(X.T @ X) @ X.T @ y).T[0]
             # w_init = np.ones(X.shape[1]) TODO: remove this line
         best_w = self.w_init.copy()
-        best_log_like = float('inf')
+        best_log_like = float("inf")
         log_like = log_likelihood(X, y, np.expand_dims(best_w, 1))
         self._loss_history.append(log_like)
 
@@ -82,8 +92,7 @@ class ADAM(Optimizer):
                 M_bias = M / (1 - self.beta1**t)
                 R_bias = R / (1 - self.beta2**t)
 
-                best_w = best_w - self.lr * (M_bias /
-                                             np.sqrt(R_bias + self.eps))
+                best_w = best_w - self.lr * (M_bias / np.sqrt(R_bias + self.eps))
 
             log_like = log_likelihood(X, y, np.expand_dims(best_w, 1))
             self._loss_history.append(log_like)

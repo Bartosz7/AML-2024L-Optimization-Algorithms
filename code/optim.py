@@ -21,6 +21,7 @@ def sgd(X, Y, step_size, max_it=10000, batch_size=1, print_every=50):
     history : A list containing the loss value at each iteration
     best_w : The best weights corresponding to the best loss value
     """
+
     def sigmoid(z):
         """
         Sigmoid activation function.
@@ -49,7 +50,7 @@ def sgd(X, Y, step_size, max_it=10000, batch_size=1, print_every=50):
         eps = 1e-14
         y = targets
         y_hat = preds
-        cost = np.mean(-y*np.log(y_hat+eps)-(1-y)*np.log(1-y_hat+eps))
+        cost = np.mean(-y * np.log(y_hat + eps) - (1 - y) * np.log(1 - y_hat + eps))
         return cost
 
     def dlogistic(preds, X, Y, W=[]):
@@ -63,7 +64,7 @@ def sgd(X, Y, step_size, max_it=10000, batch_size=1, print_every=50):
         W : The weights, optional argument, may/may not be needed depending on the loss function
         """
         y_pred = sigmoid(np.dot(W, X.T))
-        J = X.T*(y_pred-Y)
+        J = X.T * (y_pred - Y)
         J = np.mean(J, axis=1)
         return J
 
@@ -88,6 +89,6 @@ def sgd(X, Y, step_size, max_it=10000, batch_size=1, print_every=50):
 
         # compute loss gradient (J) and update weights
         J = dlogistic(preds, X_sample, Y_sample, W=best_w)
-        best_w = best_w - step_size*J
+        best_w = best_w - step_size * J
 
     return history, best_w

@@ -3,10 +3,12 @@ iwls.py
 
 Iterative Weighted Least Squares (IWLS) optimizer implementation.
 """
+
 import numpy as np
 from tqdm import tqdm
-from .util import calc_pi, log_likelihood
+
 from .optim import Optimizer
+from .util import calc_pi, log_likelihood
 
 
 # pylint: disable=invalid-name
@@ -43,7 +45,7 @@ class IWLS(Optimizer):
         pi = calc_pi(X, beta)
         self._loss_history = [log_likelihood(X, y, beta)]
 
-        best_log_like = float('inf')
+        best_log_like = float("inf")
         no_change_counter = 0
 
         for _ in tqdm(range(self.n_iter), "IWLS"):

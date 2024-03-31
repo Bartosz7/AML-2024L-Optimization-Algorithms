@@ -3,10 +3,9 @@ import warnings
 from typing import Callable
 
 import numpy as np
+from optim import ADAM, GD, IWLS
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import balanced_accuracy_score
-
-from optim import GD, IWLS, ADAM
 from utils.train_helpers import calc_pi
 
 warnings.filterwarnings("ignore")
@@ -14,18 +13,20 @@ warnings.filterwarnings("ignore")
 
 def train_and_eval(
     X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, y_test: np.ndarray
-):
+) -> tuple[list[float], list[float], list[float], float, float, float]:
     """Train models for a given train and test sets"""
     # IWLS
     iwls = IWLS(n_iter=500)
     l_iwls_vals, best_beta_iwls = iwls.optimize(X_train, y_train)
     iwls_test_preds = 1 * (calc_pi(X_test, best_beta_iwls) > 0.5)
     iwls_acc = balanced_accuracy_score(y_test, iwls_test_preds)
+
     # SGD
     gd = GD(learning_rate=0.0002, n_epoch=500)
     l_sgd_vals, best_beta_sgd = gd.optimize(X_train, y_train)
     sgd_test_preds = 1 * (calc_pi(X_test, best_beta_sgd) > 0.5)
     sgd_acc = balanced_accuracy_score(y_test, sgd_test_preds)
+
     # ADAM
     adam = ADAM(learning_rate=0.0002, n_epoch=500)
     l_adam_vals, best_beta_adam = adam.optimize(X_train, y_train)
@@ -46,7 +47,14 @@ def train_and_eval(
     return l_iwls_vals, l_sgd_vals, l_adam_vals, iwls_acc, sgd_acc, adam_acc
 
 
-def cv(preprocess_fun: Callable, n_splits: int = 5, **kwargs):
+def cv(preprocess_fun: Callable, n_splits: int = 5, **kwargs) -> tuple[
+    list[float],
+    list[float],
+    list[float],
+    list[list[float]],
+    list[list[float]],
+    list[list[float]],
+]:
     """Cross-validation for every model used to evaluate balanced accuracy.
 
     Arguments:
@@ -58,7 +66,7 @@ def cv(preprocess_fun: Callable, n_splits: int = 5, **kwargs):
     interactions : if True the interactions between variables are added during preprocessing
 
     Returns:
-
+        TODO
     """
     sgd_acc_list = []
     adam_acc_list = []

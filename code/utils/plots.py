@@ -1,11 +1,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
 import pandas as pd
+import seaborn as sns
+
+# TODO: type annotations
 
 
-def plot_figures_for_cv(l_iwls_vals_list, l_sgd_vals_list, l_adam_vals_list):
-    """Function plots Minus log likelihood vs Iteration number for each model and split from CV"""
+def plot_figures_for_cv(l_iwls_vals_list, l_sgd_vals_list, l_adam_vals_list) -> None:
+    """Function plots Minus log likelihood vs Iteration number for each model and split from CV."""
     n_splits = len(l_iwls_vals_list)
     for i in range(n_splits):
 
@@ -37,7 +39,8 @@ def plot_figures_for_cv(l_iwls_vals_list, l_sgd_vals_list, l_adam_vals_list):
         plt.show()
 
 
-def plot_acc_boxplots(sgd_acc_list, adam_acc_list, iwls_acc_list):
+def plot_acc_boxplots(sgd_acc_list, adam_acc_list, iwls_acc_list) -> None:
+    """TODO"""
     df = pd.DataFrame(
         {
             "acc": sgd_acc_list + adam_acc_list + iwls_acc_list,

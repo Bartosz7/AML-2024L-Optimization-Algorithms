@@ -1,16 +1,21 @@
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import numpy as np
+
 import pandas as pd
 from scipy.io import arff
 from sklearn import preprocessing
-
 from utils.preprocess_helpers import impute_water, one_hot_encode, split_with_preprocess
-from pathlib import Path
 
 RANDOM_STATE = 123  # TODO: where is it used?
 DATA_DIR = Path("../data")
 
 
-def preprocess_booking(filename: str = DATA_DIR / "booking.csv",
-                       interactions: bool = False):
+def preprocess_booking(
+    filename: str = DATA_DIR / "booking.csv", interactions: bool = False
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for booking.csv dataset."""
     booking = pd.read_csv(filename).drop(["Booking_ID", "date of reservation"], axis=1)
     booking["market segment type"] = 1 * (booking["market segment type"] == "Online")
@@ -26,8 +31,9 @@ def preprocess_booking(filename: str = DATA_DIR / "booking.csv",
     )
 
 
-def preprocess_churn(filename: str = DATA_DIR / "churn.csv",
-                     interactions: bool = False):
+def preprocess_churn(
+    filename: str = DATA_DIR / "churn.csv", interactions: bool = False
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for churn.csv dataset."""
     churn = pd.read_csv(filename)
     churn["FrequentFlyer"] = 1 * (churn["FrequentFlyer"] == "Yes")
@@ -48,26 +54,26 @@ def preprocess_churn(filename: str = DATA_DIR / "churn.csv",
     )
 
 
-def preprocess_diabetes(filename: str = DATA_DIR / "diabetes.arff",
-                        interactions: bool = False):
+def preprocess_diabetes(
+    filename: str = DATA_DIR / "diabetes.arff", interactions: bool = False
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for diabetes.arff dataset."""
     df = pd.DataFrame(arff.loadarff(filename)[0])
     str_df = df.select_dtypes([object]).astype(str)
     df[str_df.columns] = str_df
-    df['class'] = df['class'].apply(lambda x: 1 if x == 'tested_positive' else 0)
+    df["class"] = df["class"].apply(lambda x: 1 if x == "tested_positive" else 0)
 
     return split_with_preprocess(
         df=df,
         target_col_name="class",
         dataset_name="diabetes",
-        interactions=interactions
+        interactions=interactions,
     )
 
 
 def preprocess_employee(
-    filename: str = DATA_DIR / "employee.csv",
-    interactions: bool = False
-):
+    filename: str = DATA_DIR / "employee.csv", interactions: bool = False
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for employee.csv dataset."""
     df = pd.read_csv(filename)
     df["EducationBachelors"] = 1 * (df["Education"] == "Bachelors")
@@ -85,9 +91,8 @@ def preprocess_employee(
 
 
 def preprocess_challenger(
-    filename: str = DATA_DIR / "challenger_lol.csv",
-    interactions: bool = False
-):
+    filename: str = DATA_DIR / "challenger_lol.csv", interactions: bool = False
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for challenger_lol.csv dataset."""
     df = pd.read_csv(filename)
     df.drop(["blueFirstBlood", "redFirstBlood", "gameId"], axis=1, inplace=True)
@@ -112,9 +117,8 @@ def preprocess_challenger(
 
 
 def preprocess_jungle(
-    filename: str = DATA_DIR / "jungle_chess.arff",
-    interactions: bool = False
-):
+    filename: str = DATA_DIR / "jungle_chess.arff", interactions: bool = False
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for jungle_chess.arff dataset."""
     df = arff.loadarff(filename)
     df = pd.DataFrame(df[0])
@@ -153,8 +157,9 @@ def preprocess_jungle(
     )
 
 
-def preprocess_ionosphere(filename: str = DATA_DIR / "ionosphere.data",
-                          interactions: bool = False):
+def preprocess_ionosphere(
+    filename: str = DATA_DIR / "ionosphere.data", interactions: bool = False
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for ionosphere.data dataset."""
     df = pd.read_csv(filename, header=None)
     df = df.rename(columns={34: "class"})
@@ -168,9 +173,8 @@ def preprocess_ionosphere(filename: str = DATA_DIR / "ionosphere.data",
 
 
 def preprocess_water(
-    filename: str = DATA_DIR / "water_quality.csv", 
-    interactions: bool = False
-):
+    filename: str = DATA_DIR / "water_quality.csv", interactions: bool = False
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for water_quality.csv dataset."""
     water = pd.read_csv(filename)
 
@@ -183,11 +187,20 @@ def preprocess_water(
     )
 
 
-def preprocess_seeds(filename: str = DATA_DIR / "seeds.txt",
-                     interactions: bool = False):
+def preprocess_seeds(
+    filename: str = DATA_DIR / "seeds.txt", interactions: bool = False
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for seeds.txt dataset."""
-    cols = ["A", "P", "C", "kernel_length", "kernel_width",
-            "asymmetry_coef", "kernel_groove_length", "class"]
+    cols = [
+        "A",
+        "P",
+        "C",
+        "kernel_length",
+        "kernel_width",
+        "asymmetry_coef",
+        "kernel_groove_length",
+        "class",
+    ]
     df = pd.read_csv(filename, sep=r"\s+", header=None, names=cols)
     # combine classes 1, 3 (similar) and 2 (different) based on pairplot
     df["class"] = df["class"].map({1: 0, 2: 1, 3: 2})
@@ -199,7 +212,9 @@ def preprocess_seeds(filename: str = DATA_DIR / "seeds.txt",
     )
 
 
-def preprocess_sonar(filename: str = DATA_DIR / "sonar.data", interactions: bool = False):
+def preprocess_sonar(
+    filename: str = DATA_DIR / "sonar.data", interactions: bool = False
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Preprocessing for sonar.data dataset."""
     df = pd.read_csv(filename, header=None)
     df = df.rename(columns={60: "class"})
