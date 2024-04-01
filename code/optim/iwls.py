@@ -38,9 +38,10 @@ class IWLS(Optimizer):
         best_w : The best weights corresponding to the best loss value
         """
         self.reset()  # resets history and best weights
+        eps = 1e-8
         if standardize:
             X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
-        beta = np.linalg.inv(X.T @ X) @ X.T @ y
+        beta = np.linalg.inv(X.T @ X + np.eye(X.shape[0]) * eps) @ X.T @ y
         # beta = np.zeros((X.shape[1], 1))
         pi = calc_pi(X, beta)
         self._loss_history = [log_likelihood(X, y, beta)]
@@ -51,7 +52,9 @@ class IWLS(Optimizer):
         no_change_counter = 0
         for _ in tqdm(range(self.n_iter), "IWLS"):
             W = np.diag((pi * (1 - pi)).T[0])
-            beta = beta + np.linalg.inv(X.T @ W @ X) @ X.T @ (y - pi)
+            beta = beta + np.linalg.inv(
+                X.T @ W @ X + np.eye(X.shape[0]) * eps
+            ) @ X.T @ (y - pi)
             pi = calc_pi(X, beta)
             log_like = log_likelihood(X, y, beta)
             self._loss_history.append(log_like)
