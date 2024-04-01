@@ -42,7 +42,7 @@ def train_and_eval(
         "qda": QDA(),
         "lda": LDA(),
         "dt": DecisionTreeClassifier(max_depth=5),
-        "rf": RandomForestClassifier(max_depth=5),
+        "rf": RandomForestClassifier(max_depth=5, min_samples_split=3),
     }
 
     for name, model in scikit_models.items():

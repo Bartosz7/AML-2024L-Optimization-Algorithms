@@ -6,7 +6,7 @@ from pandas.api.types import is_object_dtype
 from sklearn.model_selection import train_test_split
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from datasets.dataset_model import Dataset
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 
 def one_hot_encode(df: pd.DataFrame) -> pd.DataFrame:
@@ -82,7 +82,7 @@ def split_with_preprocess(
         X_train = X_train.iloc[:, indices_to_drop].to_numpy()
         X_test = X_test.iloc[:, indices_to_drop].to_numpy()
 
-    scaler = MinMaxScaler()
+    scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
