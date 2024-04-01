@@ -126,6 +126,7 @@ class Challenger(Dataset):
                 )
             df.drop(f"{col}FirstTowerLane", axis=1, inplace=True)
             df.drop(f"{col}DragnoType", axis=1, inplace=True)
+        self.df = df
         return df
 
 
