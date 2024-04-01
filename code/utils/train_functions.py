@@ -50,8 +50,8 @@ def train_and_eval(
         y_pred = np.expand_dims(model.predict(X_test), 1)
         acc_vals_dict[name] = balanced_accuracy_score(y_test, y_pred)
 
-    for key, val in acc_vals_dict.items():
-        print(f"Balanced accuracy of {key} is: {val}")
+    # for key, val in acc_vals_dict.items():
+    #     print(f"Balanced accuracy of {key} is: {val}")
 
     return l_vals_dict, acc_vals_dict
 

@@ -25,9 +25,10 @@ class ADAM(Optimizer):
         batch_size: int = 1,
         beta1: float = 0.9,
         beta2: float = 0.999,
-        eps: float = 1e-8,
+        eps1: float = 1e-8,
+        eps2: float = 1e-1,
         w_init: Optional[np.ndarray] = None,
-        tolerance: int = 10,
+        tolerance: int = 5,
     ) -> None:
         """
         Initializes ADAM optimizer with the given parameters.
@@ -48,7 +49,8 @@ class ADAM(Optimizer):
         self.beta1 = beta1
         self.beta2 = beta2
         self.w_init = w_init  # use formula for w_init
-        self.eps = eps
+        self.eps1 = eps1
+        self.eps2 = eps2
         self.tolerance = tolerance
 
     def fit(self, X, y):
@@ -62,7 +64,7 @@ class ADAM(Optimizer):
         self.reset()  # resets history and best weights
         if self.w_init is None:  # compute w_init from the normal equation
             self.w_init = (
-                np.linalg.inv(X.T @ X) @ X.T @ y + np.eye(X.shape[1]) * self.eps
+                np.linalg.inv(X.T @ X) @ X.T @ y + np.eye(X.shape[1]) * self.eps1
             ).T[0]
             # w_init = np.ones(X.shape[1]) TODO: remove this line
         best_w = self.w_init.copy()
@@ -96,12 +98,12 @@ class ADAM(Optimizer):
                 M_bias = M / (1 - self.beta1**t)
                 R_bias = R / (1 - self.beta2**t)
 
-                best_w = best_w - self.lr * (M_bias / np.sqrt(R_bias + self.eps))
+                best_w = best_w - self.lr * (M_bias / np.sqrt(R_bias + self.eps1))
 
             log_like = log_likelihood(X, y, np.expand_dims(best_w, 1))
             self._loss_history.append(log_like)
             # update best loss, weights, and check stopping rule
-            if log_like < best_log_like:
+            if log_like < best_log_like - self.eps2:
                 best_log_like = log_like
                 self._global_best_weights = best_w
                 no_change_counter = 0

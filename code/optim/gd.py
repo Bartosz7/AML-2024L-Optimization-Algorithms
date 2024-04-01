@@ -25,9 +25,10 @@ class GD(Optimizer):
         batch_size: int = 1,
         beta1: float = 0.9,
         beta2: float = 0.999,
-        eps: float = 1e-8,
+        eps1: float = 1e-8,
+        eps2: float = 1e-1,
         w_init: Optional[np.ndarray] = None,
-        tolerance: int = 10,
+        tolerance: int = 5,
     ) -> None:
         """
         Initializes GD optimizer with the given parameters.
@@ -49,7 +50,8 @@ class GD(Optimizer):
         self.batch_size = batch_size
         self.beta1 = beta1
         self.beta2 = beta2
-        self.eps = eps
+        self.eps1 = eps1
+        self.eps2 = eps2
         self.w_init = w_init
         self.tolerance = tolerance
 
@@ -57,7 +59,7 @@ class GD(Optimizer):
         self.reset()  # resets history and best weights
         if self.w_init is None:
             self.w_init = (
-                np.linalg.inv(X.T @ X) @ X.T @ y + np.eye(X.shape[1]) * self.eps
+                np.linalg.inv(X.T @ X) @ X.T @ y + np.eye(X.shape[1]) * self.eps1
             ).T[0]
         best_w = self.w_init.copy()
         best_log_like = float("inf")
@@ -81,7 +83,7 @@ class GD(Optimizer):
                 best_w = best_w - self.lr * J
             log_like = log_likelihood(X, y, np.expand_dims(best_w, 1))
             self._loss_history.append(log_like)
-            if log_like < best_log_like:
+            if log_like < best_log_like - self.eps2:
                 best_log_like = log_like
                 self._global_best_weights = best_w
                 no_change_counter = 0
