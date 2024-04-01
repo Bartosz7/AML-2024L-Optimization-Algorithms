@@ -8,15 +8,15 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import balanced_accuracy_score
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import balanced_accuracy_score
+from datasets import split_with_preprocess, Dataset
 
 warnings.filterwarnings("ignore")
 
 
 def train_and_eval(
-    X_train: np.ndarray, y_train: np.ndarray,
-    X_test: np.ndarray, y_test: np.ndarray
+    X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, y_test: np.ndarray
 ) -> tuple[dict[str, list[float]], dict[str, float]]:
     """Train models for a given train and test sets"""
 
@@ -34,8 +34,8 @@ def train_and_eval(
     for name, model in custom_models.items():
         model.fit(X_train, y_train)
         l_vals_dict[name] = model.loss_history
-        acc_vals_dict[name] = balanced_accuracy_score(y_test,
-                                                      model.predict(X_test))
+        acc_vals_dict[name] = balanced_accuracy_score(y_test, model.predict(X_test))
+
     # Scikit-learn models
     scikit_models = {
         "lr": LogisticRegression(),
@@ -56,7 +56,7 @@ def train_and_eval(
     return l_vals_dict, acc_vals_dict
 
 
-def cv(preprocess_fun: Callable, n_splits: int = 5, **kwargs):
+def cv(dataset: Dataset, n_splits: int = 5, **kwargs):
     """Cross-validation for every model used to evaluate balanced accuracy.
 
     Arguments:
@@ -70,27 +70,21 @@ def cv(preprocess_fun: Callable, n_splits: int = 5, **kwargs):
     Returns:
         TODO
     """
+    all_models = ["iwls", "sgd", "adam", "lr", "qda", "lda", "dt", "rf"]
+    custom_models = ["iwls", "sgd", "adam"]
     acc_vals_splits_dict = {
-        "iwls": [None for i in range(n_splits)],
-        "sgd": [None for i in range(n_splits)],
-        "adam": [None for i in range(n_splits)],
-        "lr": [None for i in range(n_splits)],
-        "qda": [None for i in range(n_splits)],
-        "lda": [None for i in range(n_splits)],
-        "dt": [None for i in range(n_splits)],
-        "rf": [None for i in range(n_splits)],
+        model: [None for _ in range(n_splits)] for model in all_models
     }
-
     l_vals_splits_dict = {
-        "iwls": [None for i in range(n_splits)],
-        "sgd": [None for i in range(n_splits)],
-        "adam": [None for i in range(n_splits)],
+        model: [None for _ in range(n_splits)] for model in custom_models
     }
 
     for i in range(n_splits):
         print(f"CV split {i+1}")
 
-        X_train, y_train, X_test, y_test = preprocess_fun(**kwargs)
+        X_train, y_train, X_test, y_test = split_with_preprocess(
+            dataset=dataset, **kwargs
+        )
         time.sleep(1)  # to remove visual bug with tqdm
         l_vals_dict, acc_vals_dict = train_and_eval(X_train, y_train, X_test, y_test)
 
