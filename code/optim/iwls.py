@@ -16,7 +16,7 @@ class IWLS(Optimizer):
     """Iterative Weighted Least Squares (IWLS) optimizer implementation
     with logistic loss for binary classification [0,1]."""
 
-    def __init__(self, n_iter: int, tolerance: int = 5) -> None:
+    def __init__(self, n_iter: int, tolerance: int = 10) -> None:
         """
         Initializes ADAM optimizer with the given parameters.
 

@@ -27,7 +27,7 @@ class ADAM(Optimizer):
         beta2: float = 0.999,
         eps: float = 1e-8,
         w_init: Optional[np.ndarray] = None,
-        tolerance: int = 5,
+        tolerance: int = 10,
     ) -> None:
         """
         Initializes ADAM optimizer with the given parameters.
