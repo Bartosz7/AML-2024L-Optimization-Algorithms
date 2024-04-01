@@ -91,7 +91,9 @@ def cv(dataset: Dataset, n_splits: int = 5, seed: int = 123, **kwargs):
             dataset=dataset, **kwargs
         )
         time.sleep(1)  # to remove visual bug with tqdm
-        l_vals_dict, acc_vals_dict = train_and_eval(X_train, y_train, X_test, y_test)
+        l_vals_dict, acc_vals_dict = train_and_eval(
+            X_train, y_train, X_test, y_test, seed=seed
+        )
 
         for key in l_vals_splits_dict:
             l_vals_splits_dict[key][i] = l_vals_dict[key]
