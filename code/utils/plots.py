@@ -15,7 +15,7 @@ def plot_figures_for_cv(l_iwls_vals_list, l_sgd_vals_list, l_adam_vals_list) -> 
         l_sgd_vals = l_sgd_vals_list[i]
         l_adam_vals = l_adam_vals_list[i]
 
-        plt.figure(figsize=(15, 8))
+        plt.figure(figsize=(12, 6))
         plt.plot(
             np.linspace(1, len(l_iwls_vals), len(l_iwls_vals)),
             l_iwls_vals,
