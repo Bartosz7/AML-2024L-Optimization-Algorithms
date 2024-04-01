@@ -59,7 +59,7 @@ class GD(Optimizer):
         self.reset()  # resets history and best weights
         if self.w_init is None:
             self.w_init = (
-                np.linalg.inv(X.T @ X) @ X.T @ y + np.eye(X.shape[1]) * self.eps1
+                np.linalg.inv(X.T @ X + np.eye(X.shape[1]) * self.eps1) @ X.T @ y
             ).T[0]
         best_w = self.w_init.copy()
         best_log_like = float("inf")

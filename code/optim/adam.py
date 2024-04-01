@@ -64,7 +64,7 @@ class ADAM(Optimizer):
         self.reset()  # resets history and best weights
         if self.w_init is None:  # compute w_init from the normal equation
             self.w_init = (
-                np.linalg.inv(X.T @ X) @ X.T @ y + np.eye(X.shape[1]) * self.eps1
+                np.linalg.inv(X.T @ X + np.eye(X.shape[1]) * self.eps1) @ X.T @ y
             ).T[0]
             # w_init = np.ones(X.shape[1]) TODO: remove this line
         best_w = self.w_init.copy()
