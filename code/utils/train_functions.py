@@ -16,10 +16,14 @@ warnings.filterwarnings("ignore")
 
 
 def train_and_eval(
-    X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, y_test: np.ndarray
+    X_train: np.ndarray,
+    y_train: np.ndarray,
+    X_test: np.ndarray,
+    y_test: np.ndarray,
+    seed: int = 123,
 ) -> tuple[dict[str, list[float]], dict[str, float]]:
     """Train models for a given train and test sets"""
-
+    np.random.seed(seed)
     acc_vals_dict = {}
     l_vals_dict = {}
 
@@ -56,7 +60,7 @@ def train_and_eval(
     return l_vals_dict, acc_vals_dict
 
 
-def cv(dataset: Dataset, n_splits: int = 5, **kwargs):
+def cv(dataset: Dataset, n_splits: int = 5, seed: int = 123, **kwargs):
     """Cross-validation for every model used to evaluate balanced accuracy.
 
     Arguments:
@@ -70,6 +74,7 @@ def cv(dataset: Dataset, n_splits: int = 5, **kwargs):
     Returns:
         TODO
     """
+    np.random.seed(seed)
     all_models = ["iwls", "sgd", "adam", "lr", "qda", "lda", "dt", "rf"]
     custom_models = ["iwls", "sgd", "adam"]
     acc_vals_splits_dict = {
