@@ -60,9 +60,24 @@ def split_with_preprocess(
     test_size: int = 0.2,
     random_state: int = None,
     vif=True,
+    scale=True,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Train test split for given data frame including some additional preprocessing,
     removal of multicolinear columns using VIF, generating interactions, and adding column of ones.
+
+    Arguments:
+        dataset : Dataset object
+        interactions : If True interactions will be added to the dataset
+        test_size : Size of the test set
+        random_state: Random seed for reproducibilty
+        vif : If true multicolinear columns will be removed using VIF
+        scale : if True the data will be scaled with StandardScaler
+
+    Returns:
+        X_train : Training set
+        y_train : Target vector for training
+        X_test : Test set
+        y_test : Target vector for testing
     """
     train, test = train_test_split(
         dataset.df, test_size=test_size, random_state=random_state
@@ -76,19 +91,23 @@ def split_with_preprocess(
     X_train = train.drop(dataset.target_colname, axis=1)
     X_test = test.drop(dataset.target_colname, axis=1)
 
-    print(f"Removing multicolinear columns in {dataset.name} dataset...")
     if vif:
+        print(f"Removing multicolinear columns in {dataset.name} dataset...", sep=" ")
         indices_to_drop = _calculate_vif(X_train)
         X_train = X_train.iloc[:, indices_to_drop].to_numpy()
         X_test = X_test.iloc[:, indices_to_drop].to_numpy()
+        print(f"Finished")
 
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
-    X_test = scaler.transform(X_test)
+    if scale:
+        scaler = StandardScaler()
+        X_train = scaler.fit_transform(X_train)
+        X_test = scaler.transform(X_test)
 
     if interactions:
+        print(f"Adding interactions to {dataset.name} dataset...", sep=" ")
         X_train = _make_interactions(X_train)
         X_test = _make_interactions(X_test)
+        print(f"Finished")
 
     X_train = np.concatenate((np.ones((X_train.shape[0], 1)), X_train), 1)
     X_test = np.concatenate((np.ones((X_test.shape[0], 1)), X_test), 1)

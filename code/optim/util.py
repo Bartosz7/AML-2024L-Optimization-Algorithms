@@ -67,6 +67,7 @@ def logistic_loss(preds: np.ndarray, targets: np.ndarray) -> float:
 
 
 # pylint: disable=invalid-name
+# TODO: preds not used?
 def dlogistic(preds: np.ndarray, X: np.ndarray, Y: np.ndarray, W: np.ndarray) -> float:
     """
     Gradient/derivative of the logistic loss.
