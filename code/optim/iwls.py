@@ -16,7 +16,12 @@ class IWLS(Optimizer):
     """Iterative Weighted Least Squares (IWLS) optimizer implementation
     with logistic loss for binary classification [0,1]."""
 
-    def __init__(self, n_iter: int, tolerance: int = 10) -> None:
+    def __init__(
+        self,
+        n_iter: int,
+        tolerance: int = 10,
+        eps: float = 1e-8,
+    ) -> None:
         """
         Initializes ADAM optimizer with the given parameters.
 
@@ -28,6 +33,7 @@ class IWLS(Optimizer):
         super().__init__()
         self.n_iter = n_iter
         self.tolerance = tolerance
+        self.eps = eps
 
     def fit(self, X, y, standardize=False):
         """
@@ -38,10 +44,9 @@ class IWLS(Optimizer):
         best_w : The best weights corresponding to the best loss value
         """
         self.reset()  # resets history and best weights
-        eps = 1e-8
         if standardize:
             X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
-        beta = np.linalg.inv(X.T @ X + np.eye(X.shape[1]) * eps) @ X.T @ y
+        beta = np.linalg.inv(X.T @ X + np.eye(X.shape[1]) * self.eps) @ X.T @ y
         # beta = np.zeros((X.shape[1], 1))
         pi = calc_pi(X, beta)
         self._loss_history = [log_likelihood(X, y, beta)]
@@ -53,7 +58,7 @@ class IWLS(Optimizer):
         for _ in tqdm(range(self.n_iter), "IWLS"):
             W = np.diag((pi * (1 - pi)).T[0])
             beta = beta + np.linalg.inv(
-                X.T @ W @ X + np.eye(X.shape[1]) * eps
+                X.T @ W @ X + np.eye(X.shape[1]) * self.eps
             ) @ X.T @ (y - pi)
             pi = calc_pi(X, beta)
             log_like = log_likelihood(X, y, beta)

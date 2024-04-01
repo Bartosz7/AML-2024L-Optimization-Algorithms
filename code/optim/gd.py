@@ -56,7 +56,9 @@ class GD(Optimizer):
     def fit(self, X, y):
         self.reset()  # resets history and best weights
         if self.w_init is None:
-            self.w_init = (np.linalg.inv(X.T @ X) @ X.T @ y).T[0]
+            self.w_init = (
+                np.linalg.inv(X.T @ X) @ X.T @ y + np.eye(X.shape[1]) * self.eps
+            ).T[0]
         best_w = self.w_init.copy()
         best_log_like = float("inf")
         log_like = log_likelihood(X, y, np.expand_dims(best_w, 1))
