@@ -268,7 +268,7 @@ class Seeds(Dataset):
         ]
         df = pd.read_csv(self.filename, sep=r"\s+", header=None, names=cols)
         # combine classes 1, 3 (similar) and 2 (different) based on pairplot
-        df["class"] = df["class"].map({1: 0, 2: 1, 3: 2})
+        df["class"] = df["class"].map({1: 0, 2: 1, 3: 0})
         self.df = df
         return df
 
