@@ -49,6 +49,7 @@ class IWLS(Optimizer):
         if standardize:
             X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
         beta = np.linalg.inv(X.T @ X + np.eye(X.shape[1]) * self.eps1) @ X.T @ y
+        self._global_best_weights = beta
         # beta = np.zeros((X.shape[1], 1))
         pi = calc_pi(X, beta)
         self._loss_history = [log_likelihood(X, y, beta)]
