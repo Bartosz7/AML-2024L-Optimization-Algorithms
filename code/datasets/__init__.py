@@ -10,7 +10,7 @@ from datasets.datasets import (
     Churn,
     Dataset,
     Diabetes,
-    Employee,
+    # Employee, # DISCARDED from experiments
     Ionosphere,
     Jungle,
     Seeds,
@@ -23,7 +23,7 @@ class DATASETS(Enum):
     booking = Booking
     churn = Churn
     diabetes = Diabetes
-    employee = Employee
+    # employee = Employee  # DISCARDED from experiments
     challenger = Challenger
     jungle = Jungle
     ionosphere = Ionosphere
