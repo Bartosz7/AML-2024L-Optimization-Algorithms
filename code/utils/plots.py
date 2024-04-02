@@ -1,3 +1,5 @@
+from typing import Optional
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -39,7 +41,10 @@ def plot_figures_for_cv(l_iwls_vals_list, l_sgd_vals_list, l_adam_vals_list) -> 
         plt.show()
 
 
-def plot_acc_boxplots(acc_vals_splits_dict):
+def plot_acc_boxplots(
+    acc_vals_splits_dict: dict[str, list[float]],
+    inter_acc_vals_splits_dict: Optional[dict[str, list[float]]] = None,
+):
     """TODO"""
     plt.figure(figsize=(10, 6))
     acc_final_list = []
@@ -49,6 +54,13 @@ def plot_acc_boxplots(acc_vals_splits_dict):
         acc_final_list += value
         model_names_list += [key for i in range(len(value))]
 
+    if inter_acc_vals_splits_dict is not None:
+        inter = ["without"] * len(acc_final_list) + ["with"] * len(acc_final_list)
+        interactions = pd.DataFrame({"interactions": inter})
+        for key, value in inter_acc_vals_splits_dict.items():
+            acc_final_list += value
+            model_names_list += [key for i in range(len(value))]
+
     df = pd.DataFrame(
         {
             "acc": acc_final_list,
@@ -56,8 +68,16 @@ def plot_acc_boxplots(acc_vals_splits_dict):
         }
     )
 
-    sns.boxplot(data=df, x="model", y="acc").set(
-        title=f"Models balanced accuracy for {len(acc_vals_splits_dict['iwls'])} train test splits",
-        xlabel="Models",
-        ylabel="Balanced accuracy",
-    )
+    if inter_acc_vals_splits_dict is None:
+        sns.boxplot(data=df, x="model", y="acc").set(
+            title=f"Models balanced accuracy for {len(acc_vals_splits_dict['iwls'])} train test splits",
+            xlabel="Models",
+            ylabel="Balanced accuracy",
+        )
+    else:
+        df = pd.concat([df, interactions], axis=1)
+        sns.boxplot(data=df, x="model", y="acc", hue="interactions").set(
+            title=f"Models balanced accuracy for {len(acc_vals_splits_dict['iwls'])} train test splits",
+            xlabel="Models",
+            ylabel="Balanced accuracy",
+        )

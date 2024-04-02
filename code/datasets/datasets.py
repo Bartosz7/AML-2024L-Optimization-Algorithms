@@ -5,8 +5,9 @@ import numpy as np
 import pandas as pd
 from scipy.io import arff
 from sklearn import preprocessing
-from datasets.preprocess_helpers import one_hot_encode
+
 from datasets.dataset_model import Dataset
+from datasets.preprocess_helpers import one_hot_encode
 
 DATA_DIR = Path("../data")
 

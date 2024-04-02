@@ -1,12 +1,11 @@
-from typing import Callable, Optional
-
 import numpy as np
 import pandas as pd
 from pandas.api.types import is_object_dtype
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 from statsmodels.stats.outliers_influence import variance_inflation_factor
+
 from datasets.dataset_model import Dataset
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 
 def one_hot_encode(df: pd.DataFrame) -> pd.DataFrame:
@@ -59,8 +58,8 @@ def split_with_preprocess(
     interactions: bool = False,
     test_size: int = 0.2,
     random_state: int = None,
-    vif=True,
-    scale=True,
+    vif: bool = True,
+    scale: bool = True,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Train test split for given data frame including some additional preprocessing,
     removal of multicolinear columns using VIF, generating interactions, and adding column of ones.

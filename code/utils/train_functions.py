@@ -1,6 +1,5 @@
 import time
 import warnings
-from typing import Callable
 
 import numpy as np
 from optim import ADAM, GD, IWLS
@@ -8,9 +7,11 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import balanced_accuracy_score
-from datasets import split_with_preprocess, Dataset
+from sklearn.tree import DecisionTreeClassifier
+
+from datasets.dataset_model import Dataset
+from datasets.preprocess_helpers import split_with_preprocess
 
 warnings.filterwarnings("ignore")
 
