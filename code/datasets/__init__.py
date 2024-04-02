@@ -21,7 +21,7 @@ from datasets.datasets import (
 
 class DATASETS(Enum):
     booking = Booking
-    churn: Churn
+    churn = Churn
     diabetes = Diabetes
     employee = Employee
     challenger = Challenger
