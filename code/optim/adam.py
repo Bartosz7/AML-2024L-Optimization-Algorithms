@@ -59,7 +59,7 @@ class ADAM(Optimizer):
 
         Returns:
         loss_history : A list containing the loss value at each iteration
-        best_w : The best weights corresponding to the best loss value
+        global_best_weights : The best weights corresponding to the best loss value
         """
         self.reset()  # resets history and best weights
         if self.w_init is None:  # compute w_init from the normal equation
