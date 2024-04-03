@@ -5,10 +5,12 @@ Training and cross-validation functions for models evaluation.
 """
 
 import time
-from typing import Dict
 import warnings
+from typing import Dict
 
 import numpy as np
+from datasets.dataset_model import Dataset
+from datasets.preprocess_helpers import split_with_preprocess
 from optim import ADAM, GD, IWLS
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
@@ -16,9 +18,6 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import balanced_accuracy_score
 from sklearn.tree import DecisionTreeClassifier
-
-from datasets.dataset_model import Dataset
-from datasets.preprocess_helpers import split_with_preprocess
 
 warnings.filterwarnings("ignore")
 

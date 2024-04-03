@@ -7,12 +7,11 @@ Includes train-test split, one-hot encoding, VIF, and interactions.
 
 import numpy as np
 import pandas as pd
+from datasets.dataset_model import Dataset
 from pandas.api.types import is_object_dtype
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from statsmodels.stats.outliers_influence import variance_inflation_factor
-
-from datasets.dataset_model import Dataset
 
 
 def one_hot_encode(df: pd.DataFrame) -> pd.DataFrame:

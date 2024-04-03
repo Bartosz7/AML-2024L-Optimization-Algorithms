@@ -6,6 +6,7 @@ preprocessing functions, the function to load the datasets.
 """
 
 from enum import Enum
+
 from datasets.datasets import (
     Booking,
     Challenger,

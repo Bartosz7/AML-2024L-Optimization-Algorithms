@@ -5,13 +5,13 @@ Preprocessing for all datasets.
 """
 
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
-from scipy.io import arff
-from sklearn import preprocessing
-
 from datasets.dataset_model import Dataset
 from datasets.preprocess_helpers import one_hot_encode
+from scipy.io import arff
+from sklearn import preprocessing
 
 DATA_DIR = Path("../data")
 
