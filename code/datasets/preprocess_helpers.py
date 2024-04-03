@@ -7,12 +7,11 @@ Includes train-test split, one-hot encoding, VIF, and interactions.
 
 import numpy as np
 import pandas as pd
+from datasets.dataset_model import Dataset
 from pandas.api.types import is_object_dtype
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from statsmodels.stats.outliers_influence import variance_inflation_factor
-
-from datasets.dataset_model import Dataset
 
 
 def one_hot_encode(df: pd.DataFrame) -> pd.DataFrame:
@@ -64,7 +63,7 @@ def split_with_preprocess(
     dataset: Dataset,
     interactions: bool = False,
     test_size: int = 0.2,
-    random_state: int = None,
+    random_state: int = 123,
     vif: bool = True,
     scale: bool = True,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
@@ -102,7 +101,7 @@ def split_with_preprocess(
         indices_to_drop = _calculate_vif(X_train)
         X_train = X_train.iloc[:, indices_to_drop].to_numpy()
         X_test = X_test.iloc[:, indices_to_drop].to_numpy()
-        print(f"Finished")
+        print("Finished")
 
     if scale:
         scaler = StandardScaler()
@@ -113,7 +112,7 @@ def split_with_preprocess(
         print(f"Adding interactions to {dataset.name} dataset...", end=" ")
         X_train = _make_interactions(X_train)
         X_test = _make_interactions(X_test)
-        print(f"Finished")
+        print("Finished")
 
     X_train = np.concatenate((np.ones((X_train.shape[0], 1)), X_train), 1)
     X_test = np.concatenate((np.ones((X_test.shape[0], 1)), X_test), 1)

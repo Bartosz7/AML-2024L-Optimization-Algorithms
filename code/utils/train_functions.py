@@ -6,8 +6,11 @@ Training and cross-validation functions for models evaluation.
 
 import time
 import warnings
+from typing import Dict
 
 import numpy as np
+from datasets.dataset_model import Dataset
+from datasets.preprocess_helpers import split_with_preprocess
 from optim import ADAM, GD, IWLS
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
@@ -15,9 +18,6 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import balanced_accuracy_score
 from sklearn.tree import DecisionTreeClassifier
-
-from datasets.dataset_model import Dataset
-from datasets.preprocess_helpers import split_with_preprocess
 
 warnings.filterwarnings("ignore")
 
@@ -30,7 +30,19 @@ def train_and_eval(
     seed: int = 123,
 ) -> tuple[dict[str, list[float]], dict[str, float]]:
     """Train models for a given train and test sets and return log-likelihood history and
-    final balanced accuracy for each model."""
+    final balanced accuracy for each model.
+
+    Arguments:
+        X_train : Array with training data
+        y_train : Array with target for training data
+        X_test : Array with test data
+        y_test : Array with target for test data
+        seed : Random seed for reproducibility
+
+    Returns:
+        l_vals_dict : Dictionary with log-likelihood history for a single split for each model
+        acc_vals_dict : Dictionary with balanced accuracy for a single split for each model
+    """
     np.random.seed(seed)
     acc_vals_dict = {}
     l_vals_dict = {}
@@ -65,20 +77,26 @@ def train_and_eval(
     return l_vals_dict, acc_vals_dict
 
 
-def cv(dataset: Dataset, n_splits: int = 5, seed: int = 123, **kwargs):
+def cv(
+    dataset: Dataset, n_splits: int = 5, seed: int = 123, **kwargs
+) -> tuple[Dict[str, list[float]], Dict[str, list[float]]]:
     """Cross-validation for every model used to evaluate balanced accuracy.
 
     Arguments:
-        preprocess_fun : function to perform preprocessing
-        n_splits : number of different splits of data
+        dataset : Dataset object
+        n_splits : Number of different splits of data
+        seed : Random seed for reproducibility
 
     Keyword Arguments:
-        filename : path to file with data
-        interactions : if True the interactions between variables are added during preprocessing
+        interactions : If True the interactions between variables are added during preprocessing
+        test_size : Size of the test set
+        random_state: Random seed for reproducibilty
+        vif : If true multicolinear columns will be removed using VIF
+        scale : If True the data will be scaled with StandardScaler
 
     Returns:
-        l_vals_splits_dict : dictionary with log-likelihood history for each split for each model
-        acc_vals_splits_dict : dictionary with balanced accuracy for each split for each model
+        l_vals_splits_dict : Dictionary with log-likelihood history for each split for each model
+        acc_vals_splits_dict : Dictionary with balanced accuracy for each split for each model
     """
     np.random.seed(seed)
     all_models = ["iwls", "sgd", "adam", "lr", "qda", "lda", "dt", "rf"]

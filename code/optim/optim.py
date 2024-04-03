@@ -21,9 +21,7 @@ class Optimizer(ABC):
         self._global_best_weights: Optional[np.ndarray] = None
 
     @abstractmethod
-    def fit(self,
-            X: np.ndarray,
-            y: np.ndarray) -> tuple[list[float], np.ndarray]:
+    def fit(self, X: np.ndarray, y: np.ndarray) -> tuple[list[float], np.ndarray]:
         """Optimize the LR problem.
         To be overridden by the derived classes.
 
@@ -31,7 +29,9 @@ class Optimizer(ABC):
             tuple[list[float], np.ndarray]: The loss history and the best weights
         """
 
-    def predict(self, X: np.ndarray, weights: np.ndarray = None) -> np.ndarray:
+    def predict(
+        self, X: np.ndarray, weights: Optional[np.ndarray] = None
+    ) -> np.ndarray:
         """Calculates the odds and predicts the binary class labels.
 
         Returns:

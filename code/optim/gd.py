@@ -16,7 +16,7 @@ from .util import dlogistic, log_likelihood, make_batches
 # pylint: disable=invalid-name
 class GD(Optimizer):
     """Stochastic Gradient Descent optimizer implementation
-    with logistic loss for binary classification [0,1]"""
+    with logistic loss for binary classification {0,1}"""
 
     def __init__(
         self,
@@ -34,15 +34,15 @@ class GD(Optimizer):
         Initializes GD optimizer with the given parameters.
 
         Arguments:
-        learning_rate : Float value of step size to take.
-        n_epoch : Maximum number of epochs, after which to stop
-        batch_size : Size of the batch to use for each iteration
-        w_init: Initial weights, if None precomputed from the normal equation
-        tolerance: Number of epochs to wait before stopping if no improvement
+            learning_rate : Float value of step size to take.
+            n_epoch : Maximum number of epochs, after which to stop
+            batch_size : Size of the batch to use for each iteration
+            w_init: Initial weights, if None precomputed from the normal equation
+            tolerance: Number of epochs to wait before stopping if no improvement
 
         Returns:
-        history : A list containing the loss value at each iteration
-        best_w : The best weights corresponding to the best loss value
+            history : A list containing the loss value at each iteration
+            best_w : The best weights corresponding to the best loss value
         """
         super().__init__()
         self.lr = learning_rate
@@ -55,7 +55,18 @@ class GD(Optimizer):
         self.w_init = w_init
         self.tolerance = tolerance
 
-    def fit(self, X, y):
+    def fit(self, X: np.ndarray, y: np.ndarray) -> tuple[list[float], np.ndarray]:
+        """
+        Runs the SGD optimizer on the given data.
+
+        Arguments:
+            X : Array with predictors
+            y : Target array
+
+        Returns:
+            loss_history : A list containing the loss value at each iteration
+            global_best_weights : The best weights corresponding to the best loss value
+        """
         self.reset()  # resets history and best weights
         if self.w_init is None:
             self.w_init = (

@@ -5,13 +5,13 @@ Preprocessing for all datasets.
 """
 
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
-from scipy.io import arff
-from sklearn import preprocessing
-
 from datasets.dataset_model import Dataset
 from datasets.preprocess_helpers import one_hot_encode
+from scipy.io import arff
+from sklearn import preprocessing
 
 DATA_DIR = Path("../data")
 
@@ -27,7 +27,7 @@ class Booking(Dataset):
         )
 
     def load_and_preprocess(self) -> pd.DataFrame:
-        """Loads and preprocesses the dataset."""
+        """Loads and preprocesses the Booking dataset."""
         booking = pd.read_csv(self.filename).drop(
             ["Booking_ID", "date of reservation"], axis=1
         )
@@ -51,6 +51,7 @@ class Churn(Dataset):
         )
 
     def load_and_preprocess(self) -> pd.DataFrame:
+        """Loads and preprocesses the Churn dataset."""
         churn = pd.read_csv(self.filename)
         churn["FrequentFlyer"] = 1 * (churn["FrequentFlyer"] == "Yes")
         churn["BookedHotelOrNot"] = 1 * (churn["BookedHotelOrNot"] == "Yes")
@@ -78,6 +79,7 @@ class Diabetes(Dataset):
         )
 
     def load_and_preprocess(self) -> pd.DataFrame:
+        """Loads and preprocesses the Diabetes dataset."""
         df = pd.DataFrame(arff.loadarff(self.filename)[0])
         str_df = df.select_dtypes([object]).astype(str)
         df[str_df.columns] = str_df
@@ -97,6 +99,7 @@ class Employee(Dataset):
         )
 
     def load_and_preprocess(self) -> pd.DataFrame:
+        """Loads and preprocesses the Employee dataset."""
         df = pd.read_csv(self.filename)
         df["EducationBachelors"] = 1 * (df["Education"] == "Bachelors")
         df["EducationMasters"] = 1 * (df["Education"] == "Masters")
@@ -118,6 +121,7 @@ class Challenger(Dataset):
         )
 
     def load_and_preprocess(self) -> pd.DataFrame:
+        """Loads and preprocesses the Challenger dataset."""
         df = pd.read_csv(self.filename)
         df.drop(["blueFirstBlood", "redFirstBlood", "gameId"], axis=1, inplace=True)
         for col in ["blue", "red"]:
@@ -146,6 +150,7 @@ class Jungle(Dataset):
         )
 
     def load_and_preprocess(self) -> pd.DataFrame:
+        """Loads and preprocesses the Jungle dataset."""
         df = arff.loadarff(self.filename)
         df = pd.DataFrame(df[0])
         str_df = df.select_dtypes([object])
@@ -197,6 +202,7 @@ class Ionosphere(Dataset):
         )
 
     def load_and_preprocess(self) -> pd.DataFrame:
+        """Loads and preprocesses the Ionosphere dataset."""
         df = pd.read_csv(self.filename, header=None)
         df = df.rename(columns={34: "class"})
         df["class"] = df["class"].map({"g": 0, "b": 1})
@@ -216,6 +222,7 @@ class Water(Dataset):
         self.additional_preprocess = Water._impute_water
 
     def load_and_preprocess(self) -> pd.DataFrame:
+        """Loads and preprocesses the Water dataset."""
         water = pd.read_csv(self.filename)
         self.df = water
         return water
@@ -261,6 +268,7 @@ class Seeds(Dataset):
         )
 
     def load_and_preprocess(self) -> pd.DataFrame:
+        """Loads and preprocesses the Seeds dataset."""
         cols = [
             "A",
             "P",
@@ -287,6 +295,7 @@ class Sonar(Dataset):
         )
 
     def load_and_preprocess(self) -> pd.DataFrame:
+        """Loads and preprocesses the Sonar dataset."""
         df = pd.read_csv(self.filename, header=None)
         df = df.rename(columns={60: "class"})
         df["class"] = df["class"].map({"R": 0, "M": 1})

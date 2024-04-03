@@ -7,6 +7,7 @@ Common dataset model class for datasets.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Callable, Optional
 
 import pandas as pd
 
@@ -24,9 +25,9 @@ class Dataset:
         self.name = name
         self.filename = filename
         self.target_colname = target_colname
-        self.df = None
+        self.df: Optional[pd.DataFrame] = None
         # used for functions applied after train-test split e.g. imputation
-        self.additional_preprocess = None
+        self.additional_preprocess: Optional[Callable] = None
         if load_on_import:
             self.load_and_preprocess()
 

@@ -5,11 +5,20 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-# TODO: type annotations
 
+def plot_figures_for_cv(
+    l_iwls_vals_list: list[float],
+    l_sgd_vals_list: list[float],
+    l_adam_vals_list: list[float],
+) -> None:
+    """
+    Function plots Minus log likelihood vs Iteration number for each model and split from CV.
 
-def plot_figures_for_cv(l_iwls_vals_list, l_sgd_vals_list, l_adam_vals_list) -> None:
-    """Function plots Minus log likelihood vs Iteration number for each model and split from CV."""
+    Arguments:
+        l_iwls_vals_list: list of minus log-likelihood for every split for IWLS training
+        l_sgd_vals_list: list of minus log-likelihood for every split for SGD training
+        l_adam_vals_list: list of minus log-likelihood for every split for ADAM training
+    """
     n_splits = len(l_iwls_vals_list)
     for i in range(n_splits):
 
@@ -44,8 +53,19 @@ def plot_figures_for_cv(l_iwls_vals_list, l_sgd_vals_list, l_adam_vals_list) -> 
 def plot_acc_boxplots(
     acc_vals_splits_dict: dict[str, list[float]],
     inter_acc_vals_splits_dict: Optional[dict[str, list[float]]] = None,
-):
-    """TODO"""
+) -> None:
+    """
+    Function plots balanced accuracy scores using boxplots for given results of given models.
+    It might compare on the plot results for models trained with interactions and without them
+    if interaction scores are given.
+
+    Arguments:
+        acc_vals_splits_dict: Dictionary containing balanced accuracy scores for every split for
+        every model without interactions
+        inter_acc_vals_splits_dict: Dictionary containing balanced accuracy scores for every split
+        for every model with interactions
+
+    """
     plt.figure(figsize=(10, 6))
     acc_final_list = []
     model_names_list = []
