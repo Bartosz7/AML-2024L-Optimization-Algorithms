@@ -31,7 +31,19 @@ def train_and_eval(
     seed: int = 123,
 ) -> tuple[dict[str, list[float]], dict[str, float]]:
     """Train models for a given train and test sets and return log-likelihood history and
-    final balanced accuracy for each model."""
+    final balanced accuracy for each model.
+
+    Arguments:
+        X_train : Array with training data
+        y_train : Array with target for training data
+        X_test : Array with test data
+        y_test : Array with target for test data
+        seed : Random seed for reproducibility
+
+    Returns:
+        l_vals_dict : Dictionary with log-likelihood history for a single split for each model
+        acc_vals_dict : Dictionary with balanced accuracy for a single split for each model
+    """
     np.random.seed(seed)
     acc_vals_dict = {}
     l_vals_dict = {}
@@ -81,7 +93,7 @@ def cv(
         test_size : Size of the test set
         random_state: Random seed for reproducibilty
         vif : If true multicolinear columns will be removed using VIF
-        scale : if True the data will be scaled with StandardScaler
+        scale : If True the data will be scaled with StandardScaler
 
     Returns:
         l_vals_splits_dict : Dictionary with log-likelihood history for each split for each model
