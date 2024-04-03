@@ -92,10 +92,10 @@ class ADAM(Optimizer):
 
                 # compute y_hat (preds) and then loss (L)
                 # sigmoid, probability of class 1
-                preds = 1 / (1 + np.exp(-np.dot(best_w, X_sample.T)))
+                # preds = 1 / (1 + np.exp(-np.dot(best_w, X_sample.T)))
 
                 # compute loss gradient (J) and update weights
-                J = dlogistic(preds, X_sample, Y_sample, W=best_w)
+                J = dlogistic(X_sample, Y_sample, W=best_w)
                 M = self.beta1 * M + (1 - self.beta1) * J
                 R = self.beta2 * R + (1 - self.beta2) * (J**2)
 
