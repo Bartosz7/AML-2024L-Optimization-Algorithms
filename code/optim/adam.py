@@ -34,13 +34,13 @@ class ADAM(Optimizer):
         Initializes ADAM optimizer with the given parameters.
 
         Arguments:
-        learning_rate : Float value of step size to take.
-        n_epoch : Maximum number of epochs, after which to stop
-        batch_size : Size of the batch to use for each iteration
-        print_every : if positive prints loss after every `record_every` i
-                      teration (1=record all losses), otherwise record nothing
-        w_init: Initial weights, if None precomputed from the normal equation
-        tolerance: Number of epochs to wait before stopping if no improvement
+            learning_rate : Float value of step size to take.
+            n_epoch : Maximum number of epochs, after which to stop
+            batch_size : Size of the batch to use for each iteration
+            print_every : if positive prints loss after every `record_every` i
+                        teration (1=record all losses), otherwise record nothing
+            w_init: Initial weights, if None precomputed from the normal equation
+            tolerance: Number of epochs to wait before stopping if no improvement
         """
         super().__init__()
         self.lr = learning_rate
@@ -48,25 +48,28 @@ class ADAM(Optimizer):
         self.batch_size = batch_size
         self.beta1 = beta1
         self.beta2 = beta2
-        self.w_init = w_init  # use formula for w_init
+        self.w_init = w_init
         self.eps1 = eps1
         self.eps2 = eps2
         self.tolerance = tolerance
 
-    def fit(self, X, y):
+    def fit(self, X: np.ndarray, y: np.ndarray) -> tuple[list[float], np.ndarray]:
         """
         Runs the ADAM optimizer on the given data.
 
+        Arguments:
+            X : Array with predictors
+            y : Target array
+
         Returns:
-        loss_history : A list containing the loss value at each iteration
-        best_w : The best weights corresponding to the best loss value
+            loss_history : A list containing the loss value at each iteration
+            best_w : The best weights corresponding to the best loss value
         """
         self.reset()  # resets history and best weights
         if self.w_init is None:  # compute w_init from the normal equation
             self.w_init = (
                 np.linalg.inv(X.T @ X + np.eye(X.shape[1]) * self.eps1) @ X.T @ y
             ).T[0]
-            # w_init = np.ones(X.shape[1]) TODO: remove this line
         best_w = self.w_init.copy()
         self._global_best_weights = best_w
         best_log_like = float("inf")
@@ -103,6 +106,7 @@ class ADAM(Optimizer):
 
             log_like = log_likelihood(X, y, np.expand_dims(best_w, 1))
             self._loss_history.append(log_like)
+
             # update best loss, weights, and check stopping rule
             if log_like < best_log_like - self.eps2:
                 best_log_like = log_like
