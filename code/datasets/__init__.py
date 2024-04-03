@@ -1,4 +1,6 @@
 """
+datasets module
+
 This module contains the dataset classes, their
 preprocessing functions, the function to load the datasets.
 """
@@ -10,7 +12,7 @@ from datasets.datasets import (
     Churn,
     Dataset,
     Diabetes,
-    Employee,
+    # Employee, # DISCARDED from experiments
     Ionosphere,
     Jungle,
     Seeds,
@@ -23,7 +25,7 @@ class DATASETS(Enum):
     booking = Booking
     churn = Churn
     diabetes = Diabetes
-    employee = Employee
+    # employee = Employee  # DISCARDED from experiments
     challenger = Challenger
     jungle = Jungle
     ionosphere = Ionosphere

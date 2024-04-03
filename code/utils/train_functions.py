@@ -1,4 +1,11 @@
+"""
+train_functions.py
+
+Training and cross-validation functions for models evaluation.
+"""
+
 import time
+from typing import Dict
 import warnings
 
 import numpy as np
@@ -23,7 +30,8 @@ def train_and_eval(
     y_test: np.ndarray,
     seed: int = 123,
 ) -> tuple[dict[str, list[float]], dict[str, float]]:
-    """Train models for a given train and test sets"""
+    """Train models for a given train and test sets and return log-likelihood history and
+    final balanced accuracy for each model."""
     np.random.seed(seed)
     acc_vals_dict = {}
     l_vals_dict = {}
@@ -55,26 +63,26 @@ def train_and_eval(
         y_pred = np.expand_dims(model.predict(X_test), 1)
         acc_vals_dict[name] = balanced_accuracy_score(y_test, y_pred)
 
-    # for key, val in acc_vals_dict.items():
-    #     print(f"Balanced accuracy of {key} is: {val}")
-
     return l_vals_dict, acc_vals_dict
 
 
-def cv(dataset: Dataset, n_splits: int = 5, seed: int = 123, **kwargs):
+def cv(
+    dataset: Dataset, n_splits: int = 5, seed: int = 123, **kwargs
+) -> tuple[Dict[str, list[float], Dict[str, list[float]]]]:
     """Cross-validation for every model used to evaluate balanced accuracy.
 
     Arguments:
-    dataset : Dataset object
-    n_splits : number of different splits of data
-    seed : random seed for reproducibility
+        dataset : Dataset object
+        n_splits : number of different splits of data
+        seed : random seed for reproducibility
 
     Keyword Arguments:
-    filename : path to file with data
-    interactions : if True the interactions between variables are added during preprocessing
+        filename : path to file with data
+        interactions : if True the interactions between variables are added during preprocessing
 
     Returns:
-        TODO
+        l_vals_splits_dict : dictionary with log-likelihood history for each split for each model
+        acc_vals_splits_dict : dictionary with balanced accuracy for each split for each model
     """
     np.random.seed(seed)
     all_models = ["iwls", "sgd", "adam", "lr", "qda", "lda", "dt", "rf"]

@@ -62,6 +62,7 @@ class GD(Optimizer):
                 np.linalg.inv(X.T @ X + np.eye(X.shape[1]) * self.eps1) @ X.T @ y
             ).T[0]
         best_w = self.w_init.copy()
+        self._global_best_weights = best_w
         best_log_like = float("inf")
         log_like = log_likelihood(X, y, np.expand_dims(best_w, 1))
         self._loss_history.append(log_like)

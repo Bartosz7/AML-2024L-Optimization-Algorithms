@@ -1,6 +1,10 @@
-from pathlib import Path
+"""
+datasets.py
 
-# TODO: typechecking line for numpy removed?
+Preprocessing for all datasets.
+"""
+
+from pathlib import Path
 import numpy as np
 import pandas as pd
 from scipy.io import arff
