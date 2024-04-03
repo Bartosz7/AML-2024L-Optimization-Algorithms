@@ -1,3 +1,10 @@
+"""
+preprocess_helpers.py
+
+Common preprocessing functions for datasets.
+Includes train-test split, one-hot encoding, VIF, and interactions.
+"""
+
 import numpy as np
 import pandas as pd
 from pandas.api.types import is_object_dtype
@@ -91,7 +98,7 @@ def split_with_preprocess(
     X_test = test.drop(dataset.target_colname, axis=1)
 
     if vif:
-        print(f"Removing multicolinear columns in {dataset.name} dataset...", sep=" ")
+        print(f"Removing multicolinear columns in {dataset.name} dataset...", end=" ")
         indices_to_drop = _calculate_vif(X_train)
         X_train = X_train.iloc[:, indices_to_drop].to_numpy()
         X_test = X_test.iloc[:, indices_to_drop].to_numpy()
@@ -103,7 +110,7 @@ def split_with_preprocess(
         X_test = scaler.transform(X_test)
 
     if interactions:
-        print(f"Adding interactions to {dataset.name} dataset...", sep=" ")
+        print(f"Adding interactions to {dataset.name} dataset...", end=" ")
         X_train = _make_interactions(X_train)
         X_test = _make_interactions(X_test)
         print(f"Finished")

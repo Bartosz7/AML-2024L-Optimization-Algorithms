@@ -1,3 +1,9 @@
+"""
+dataset_model.py
+
+Common dataset model class for datasets.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path
