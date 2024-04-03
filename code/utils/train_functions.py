@@ -65,8 +65,9 @@ def cv(dataset: Dataset, n_splits: int = 5, seed: int = 123, **kwargs):
     """Cross-validation for every model used to evaluate balanced accuracy.
 
     Arguments:
-    preprocess_fun : function to perform preprocessing
+    dataset : Dataset object
     n_splits : number of different splits of data
+    seed : random seed for reproducibility
 
     Keyword Arguments:
     filename : path to file with data
