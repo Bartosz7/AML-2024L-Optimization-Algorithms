@@ -37,20 +37,26 @@ class IWLS(Optimizer):
         self.eps1 = eps1
         self.eps2 = eps2
 
-    def fit(self, X, y, standardize=False):
+    def fit(
+        self, X: np.ndarray, y: np.ndarray, standardize: bool = False
+    ) -> tuple[list[float], np.ndarray]:
         """
         Runs the IWLS optimizer on the given data.
 
+        Arguments:
+            X : Array with predictors
+            y : Target array
+            standardize : Indicator whether to standardize  data
+
         Returns:
-        loss_history : A list containing the loss value at each iteration
-        best_w : The best weights corresponding to the best loss value
+            loss_history : A list containing the loss value at each iteration
+            best_w : The best weights corresponding to the best loss value
         """
         self.reset()  # resets history and best weights
         if standardize:
             X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
         beta = np.linalg.inv(X.T @ X + np.eye(X.shape[1]) * self.eps1) @ X.T @ y
         self._global_best_weights = beta
-        # beta = np.zeros((X.shape[1], 1))
         pi = calc_pi(X, beta)
         self._loss_history = [log_likelihood(X, y, beta)]
 

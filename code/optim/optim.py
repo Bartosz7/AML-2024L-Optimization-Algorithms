@@ -21,9 +21,7 @@ class Optimizer(ABC):
         self._global_best_weights: Optional[np.ndarray] = None
 
     @abstractmethod
-    def fit(self,
-            X: np.ndarray,
-            y: np.ndarray) -> tuple[list[float], np.ndarray]:
+    def fit(self, X: np.ndarray, y: np.ndarray) -> tuple[list[float], np.ndarray]:
         """Optimize the LR problem.
         To be overridden by the derived classes.
 
