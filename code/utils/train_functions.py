@@ -73,16 +73,19 @@ def cv(
 
     Arguments:
         dataset : Dataset object
-        n_splits : number of different splits of data
-        seed : random seed for reproducibility
+        n_splits : Number of different splits of data
+        seed : Random seed for reproducibility
 
     Keyword Arguments:
-        filename : path to file with data
-        interactions : if True the interactions between variables are added during preprocessing
+        interactions : If True the interactions between variables are added during preprocessing
+        test_size : Size of the test set
+        random_state: Random seed for reproducibilty
+        vif : If true multicolinear columns will be removed using VIF
+        scale : if True the data will be scaled with StandardScaler
 
     Returns:
-        l_vals_splits_dict : dictionary with log-likelihood history for each split for each model
-        acc_vals_splits_dict : dictionary with balanced accuracy for each split for each model
+        l_vals_splits_dict : Dictionary with log-likelihood history for each split for each model
+        acc_vals_splits_dict : Dictionary with balanced accuracy for each split for each model
     """
     np.random.seed(seed)
     all_models = ["iwls", "sgd", "adam", "lr", "qda", "lda", "dt", "rf"]
