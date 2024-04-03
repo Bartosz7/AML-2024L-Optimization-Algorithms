@@ -86,10 +86,6 @@ class GD(Optimizer):
                 X_sample = batches[0][j]
                 Y_sample = batches[1][j]
 
-                # compute y_hat (preds) and then loss (L)
-                # sigmoid, probability of class 1
-                # preds = 1 / (1 + np.exp(-np.dot(best_w, X_sample.T)))
-
                 # compute loss gradient (J) and update weights
                 J = dlogistic(X_sample, Y_sample, W=best_w)
                 best_w = best_w - self.lr * J
