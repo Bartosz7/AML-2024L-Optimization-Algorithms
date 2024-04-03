@@ -56,6 +56,13 @@ class GD(Optimizer):
         self.tolerance = tolerance
 
     def fit(self, X, y):
+        """
+        Runs the SGD optimizer on the given data.
+
+        Returns:
+        loss_history : A list containing the loss value at each iteration
+        global_best_weights : The best weights corresponding to the best loss value
+        """
         self.reset()  # resets history and best weights
         if self.w_init is None:
             self.w_init = (
