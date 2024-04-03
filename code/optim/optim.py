@@ -29,7 +29,9 @@ class Optimizer(ABC):
             tuple[list[float], np.ndarray]: The loss history and the best weights
         """
 
-    def predict(self, X: np.ndarray, weights: np.ndarray = None) -> np.ndarray:
+    def predict(
+        self, X: np.ndarray, weights: Optional[np.ndarray] = None
+    ) -> np.ndarray:
         """Calculates the odds and predicts the binary class labels.
 
         Returns:

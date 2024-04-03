@@ -80,7 +80,7 @@ def train_and_eval(
 
 def cv(
     dataset: Dataset, n_splits: int = 5, seed: int = 123, **kwargs
-) -> tuple[Dict[str, list[float], Dict[str, list[float]]]]:
+) -> tuple[Dict[str, list[float]], Dict[str, list[float]]]:
     """Cross-validation for every model used to evaluate balanced accuracy.
 
     Arguments:
